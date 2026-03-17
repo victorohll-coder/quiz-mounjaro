@@ -199,13 +199,18 @@ body {
   justify-content: space-between;
 }
 .nav__logo {
-  font-family: var(--font-head);
-  font-size: 1.8rem;
-  letter-spacing: 2px;
-  color: var(--white);
   text-decoration: none;
+  display: flex;
+  align-items: center;
 }
-.nav__logo span { color: var(--sky); }
+.nav__logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.1);
+  transition: var(--transition);
+}
+.nav__logo-img:hover { filter: brightness(1.3); }
 .nav__links {
   display: flex;
   align-items: center;
@@ -285,6 +290,15 @@ body {
   inset: 0;
   background: var(--gradient-h);
 }
+.hero__bg-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0.35;
+}
 .hero__overlay {
   position: absolute;
   inset: 0;
@@ -323,6 +337,34 @@ body {
   padding: 100px 24px 60px;
   max-width: 900px;
 }
+/* Hero logo */
+.hero__logo-wrap {
+  margin-bottom: 32px;
+}
+.hero__logo-img {
+  height: clamp(100px, 20vw, 180px);
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 32px rgba(100,181,246,0.35));
+  animation: logoFloat 3s ease-in-out infinite;
+}
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* Sobre team photo */
+.sobre__team-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: var(--radius-lg);
+  display: block;
+}
+
 .hero__tag {
   display: inline-block;
   background: rgba(59,143,212,0.2);
@@ -440,22 +482,10 @@ body {
 .sobre__img-wrap {
   position: relative;
   height: 460px;
-}
-.sobre__img-bg {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--mid-blue), var(--blue));
   border-radius: var(--radius-lg);
+  overflow: hidden;
   border: 1px solid rgba(100,181,246,0.15);
-}
-.sobre__img-card {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
+  box-shadow: 0 16px 48px rgba(10,22,40,0.5);
 }
 .sobre__runner-icon svg {
   width: 140px;
@@ -505,6 +535,18 @@ body {
   color: var(--white);
   font-weight: 500;
 }
+/* Coach photo */
+.sobre__coach-photo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  border: 2px solid var(--light-blue);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(59,143,212,0.15);
+}
+
 /* Coach card */
 .sobre__coach {
   display: flex;
@@ -712,7 +754,12 @@ body {
   gap: 16px;
   margin-bottom: 24px;
 }
-.galeria__item { border-radius: var(--radius); overflow: hidden; }
+.galeria__item {
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
 .galeria__item--large {
   grid-column: 1;
   grid-row: 1 / 3;
@@ -721,35 +768,35 @@ body {
   grid-column: 3;
   grid-row: 1 / 3;
 }
-.galeria__placeholder {
+.galeria__photo {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  transition: var(--transition);
-  cursor: pointer;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.5s ease;
 }
-.galeria__placeholder:hover { opacity: 0.9; transform: scale(1.02); }
-.galeria__placeholder--1 { background: linear-gradient(135deg, #1a3a6b, #1e5fad); border: 1px solid rgba(100,181,246,0.2); }
-.galeria__placeholder--2 { background: linear-gradient(135deg, #0d2240, #1a3a6b); border: 1px solid rgba(100,181,246,0.15); }
-.galeria__placeholder--3 { background: linear-gradient(135deg, #1e5fad, #3b8fd4); border: 1px solid rgba(100,181,246,0.2); }
-.galeria__placeholder--4 { background: linear-gradient(135deg, #0d2240, #1e5fad); border: 1px solid rgba(100,181,246,0.15); }
-.galeria__placeholder--5 { background: linear-gradient(135deg, #1a3a6b, #3b8fd4); border: 1px solid rgba(100,181,246,0.2); }
-.galeria__placeholder-icon { font-size: 2.5rem; }
-.galeria__placeholder p { font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 500; }
-.galeria__hint {
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--text-muted);
+.galeria__item:hover .galeria__photo {
+  transform: scale(1.07);
 }
-.galeria__hint code {
-  background: rgba(59,143,212,0.15);
-  color: var(--sky);
-  padding: 2px 8px;
-  border-radius: 4px;
+.galeria__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28px 16px 14px;
+  background: linear-gradient(to top, rgba(10,22,40,0.85) 0%, transparent 100%);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.5px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.galeria__item:hover .galeria__caption {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* =================================
@@ -953,7 +1000,13 @@ body {
   display: block;
   margin-bottom: 12px;
 }
-.footer__logo strong { color: var(--sky); }
+.footer__logo-img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 12px;
+  filter: brightness(1.05);
+}
 .footer__brand p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
 .footer__address { margin-top: 12px !important; font-size: 0.82rem !important; }
 .footer__links h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--sky); margin-bottom: 20px; }

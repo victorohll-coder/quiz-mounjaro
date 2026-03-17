@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mensagem enviada | COB Run</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a1628;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .card {
+      background: #0d2240;
+      border: 1px solid rgba(100,181,246,0.15);
+      border-radius: 20px;
+      padding: 56px 48px;
+      max-width: 480px;
+      width: 100%;
+    }
+    .logo { height: 80px; width: auto; margin-bottom: 32px; }
+    .icon { font-size: 3.5rem; margin-bottom: 16px; display: block; }
+    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; color: #fff; }
+    p { color: #8ba8c8; line-height: 1.7; margin-bottom: 32px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #3b8fd4;
+      color: #fff;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: background 0.3s;
+      margin: 6px;
+    }
+    .btn:hover { background: #64b5f6; }
+    .btn--wa { background: #25d366; }
+    .btn--wa:hover { background: #1da851; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="img/logo.jpg" alt="COB Run" class="logo" />
+    <span class="icon">✅</span>
+    <h1>Mensagem enviada!</h1>
+    <p>Recebemos seu contato e entraremos em breve.<br/>
+    Mas se preferir uma resposta mais rápida, fale direto no WhatsApp!</p>
+    <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="btn btn--wa">
+      💬 Chamar no WhatsApp
+    </a>
+    <a href="index.html" class="btn">← Voltar ao site</a>
+  </div>
+</body>
+</html>
