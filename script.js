@@ -2,6 +2,55 @@
    COB RUN — JAVASCRIPT
    =========================== */
 
+// ---- LOGO: REMOVE FUNDO ESCURO VIA CANVAS ----
+function removeLogoBg(imgEl) {
+  const process = (src) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const tmp = new Image();
+    tmp.crossOrigin = 'anonymous';
+    tmp.onload = () => {
+      canvas.width  = tmp.naturalWidth;
+      canvas.height = tmp.naturalHeight;
+      ctx.drawImage(tmp, 0, 0);
+      try {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = imageData.data;
+        // Pega a cor do canto superior esquerdo como cor de fundo
+        const bgR = d[0], bgG = d[1], bgB = d[2];
+        const tol = 40; // tolerância de cor (0-255)
+        for (let i = 0; i < d.length; i += 4) {
+          const diff = Math.abs(d[i]-bgR) + Math.abs(d[i+1]-bgG) + Math.abs(d[i+2]-bgB);
+          if (diff < tol * 3) {
+            // Feathering suave nas bordas
+            const alpha = Math.min(255, Math.round((diff / (tol * 3)) * 255));
+            d[i+3] = alpha;
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        imgEl.src = canvas.toDataURL('image/png');
+        // Remove CSS blend após processamento — já tem transparência real
+        imgEl.style.mixBlendMode = 'normal';
+        imgEl.style.filter = 'drop-shadow(0 0 16px rgba(100,181,246,0.3))';
+      } catch {
+        // Fallback silencioso se canvas não tiver acesso (file://)
+      }
+    };
+    tmp.src = src;
+  };
+
+  if (imgEl.complete && imgEl.naturalWidth) {
+    process(imgEl.src);
+  } else {
+    imgEl.addEventListener('load', () => process(imgEl.src));
+  }
+}
+
+// Aplica em todas as logos da página
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.nav__logo-img, .hero__logo-img, .footer__logo-img').forEach(removeLogoBg);
+});
+
 // ---- NAV SCROLL ----
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
@@ -14,15 +63,27 @@ const mobileMenu = document.getElementById('mobileMenu');
 const mobileLinks = document.querySelectorAll('.mobile-link');
 
 hamburger.addEventListener('click', () => {
-  mobileMenu.classList.toggle('open');
-  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  const isOpen = mobileMenu.classList.toggle('open');
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+  // Anima hamburguer → X
+  hamburger.classList.toggle('active', isOpen);
 });
 
 mobileLinks.forEach(link => {
   link.addEventListener('click', () => {
     mobileMenu.classList.remove('open');
+    hamburger.classList.remove('active');
     document.body.style.overflow = '';
   });
+});
+
+// Fechar menu ao clicar fora
+mobileMenu.addEventListener('click', (e) => {
+  if (e.target === mobileMenu) {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('active');
+    document.body.style.overflow = '';
+  }
 });
 
 // ---- REVEAL ON SCROLL ----
@@ -36,12 +97,12 @@ const observer = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
 );
 reveals.forEach(el => observer.observe(el));
 
 // ---- COUNTER ANIMATION ----
-function animateCounter(el, target, duration = 1800) {
+function animateCounter(el, target, duration = 1600) {
   let start = 0;
   const step = Math.ceil(target / (duration / 16));
   const timer = setInterval(() => {
@@ -65,7 +126,7 @@ const counterObserver = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.4 }
+  { threshold: 0.3 }
 );
 
 const numerosSection = document.getElementById('numeros');
@@ -77,30 +138,11 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     const target = document.querySelector(anchor.getAttribute('href'));
     if (!target) return;
     e.preventDefault();
-    const offset = 80;
+    const offset = 72;
     const top = target.getBoundingClientRect().top + window.scrollY - offset;
     window.scrollTo({ top, behavior: 'smooth' });
   });
 });
-
-// ---- CONTACT FORM ----
-const form = document.getElementById('contactForm');
-if (form) {
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    const original = btn.textContent;
-    btn.textContent = '✅ Mensagem enviada!';
-    btn.disabled = true;
-    btn.style.background = '#2e7d32';
-    setTimeout(() => {
-      btn.textContent = original;
-      btn.disabled = false;
-      btn.style.background = '';
-      form.reset();
-    }, 3500);
-  });
-}
 
 // ---- ACTIVE NAV LINK ----
 const sections = document.querySelectorAll('section[id]');
@@ -112,16 +154,16 @@ window.addEventListener('scroll', () => {
     if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
   });
   navLinks.forEach(link => {
-    link.style.color = link.getAttribute('href') === '#' + current
-      ? 'var(--sky)'
-      : '';
+    link.style.color = link.getAttribute('href') === '#' + current ? 'var(--sky)' : '';
   });
 });
 
-// ---- PARALLAX HERO LINES ----
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  document.querySelectorAll('.hero__bg').forEach(bg => {
-    bg.style.transform = `translateY(${y * 0.3}px)`;
+// ---- PARALLAX HERO LINES (só desktop) ----
+if (window.innerWidth > 768) {
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    document.querySelectorAll('.hero__bg').forEach(bg => {
+      bg.style.transform = `translateY(${y * 0.3}px)`;
+    });
   });
-});
+}

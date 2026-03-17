@@ -1035,60 +1035,151 @@ body {
 /* =================================
    RESPONSIVE
 ================================= */
-@media (max-width: 1024px) {
-  .servicos__grid { grid-template-columns: repeat(2, 1fr); }
-  .sobre__grid { gap: 48px; }
-  .contato__grid { gap: 48px; }
-  .footer__grid { grid-template-columns: 1fr 1fr; }
+
+/* ---- Hamburger → X animation ---- */
+.nav__hamburger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav__hamburger.active span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.nav__hamburger.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
+/* ---- 1024px (Tablet landscape) ---- */
+@media (max-width: 1024px) {
+  .sobre__grid { gap: 48px; }
+  .servicos__grid { grid-template-columns: repeat(2, 1fr); }
+  .servicos__grid .card:last-child:nth-child(3n+1) { grid-column: auto; }
+  .contato__grid { gap: 48px; }
+  .footer__grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+
+/* ---- 768px (Mobile) ---- */
 @media (max-width: 768px) {
+  /* Global padding reduction */
+  .sobre, .servicos, .numeros, .galeria, .depoimentos, .contato {
+    padding: 80px 0;
+  }
+  .section-header { margin-bottom: 40px; }
+  .container { padding: 0 18px; }
+
+  /* Nav */
   .nav__links { display: none; }
   .nav__hamburger { display: flex; }
 
-  .hero__title { font-size: clamp(3.5rem, 14vw, 6rem); }
+  /* Hero */
+  .hero__content { padding: 90px 20px 56px; }
+  .hero__title { font-size: clamp(3.2rem, 13vw, 5.5rem); letter-spacing: 2px; }
   .hero__title--accent { -webkit-text-stroke: 2px var(--sky); }
-  .hero__stats { gap: 20px; }
-  .hero__stat-divider { height: 30px; }
+  .hero__subtitle { font-size: 0.97rem; margin-bottom: 32px; }
+  .hero__actions { gap: 12px; margin-bottom: 40px; }
+  .hero__stats { gap: 16px; }
+  .hero__stat-num { font-size: 1.6rem; }
+  .hero__stat-label { font-size: 0.72rem; }
+  .hero__stat-divider { height: 28px; }
 
-  .sobre__grid { grid-template-columns: 1fr; gap: 48px; }
-  .sobre__text { padding-left: 0; }
-  .sobre__img-wrap { height: 320px; }
-  .sobre__badge { right: 0; bottom: -16px; }
+  /* Sobre */
+  .sobre__grid { grid-template-columns: 1fr; gap: 36px; }
+  .sobre__text { padding-left: 0; order: 2; }
+  .sobre__visual { order: 1; }
+  .sobre__img-wrap { height: 280px; }
+  .sobre__badge {
+    right: 12px;
+    bottom: -12px;
+    padding: 10px 16px;
+    font-size: 0.75rem;
+  }
+  .sobre__coach { margin-top: 20px; }
 
-  .servicos__grid { grid-template-columns: 1fr; }
+  /* Serviços */
+  .servicos__grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .servicos__grid .card:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: 320px; margin: 0 auto; width: 100%; }
+
+  /* Números */
   .numeros__grid { grid-template-columns: repeat(2, 1fr); }
-  .numero { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.15); }
-  .numero:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.15); }
+  .numero { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.12); }
+  .numero:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.12); }
+  .numero:last-child, .numero:nth-last-child(2):nth-child(odd) { border-bottom: none; }
 
+  /* Galeria */
   .galeria__grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
+    gap: 10px;
   }
   .galeria__item--large,
-  .galeria__item--tall {
-    grid-column: auto;
-    grid-row: auto;
-    height: 180px;
+  .galeria__item--tall,
+  .galeria__item {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    height: 170px;
   }
-  .galeria__item { height: 180px; }
 
-  .depoimentos__grid { grid-template-columns: 1fr; }
+  /* Depoimentos */
+  .depoimentos__grid { grid-template-columns: 1fr; gap: 20px; }
 
-  .contato__grid { grid-template-columns: 1fr; gap: 48px; }
-  .contato__form { grid-template-columns: 1fr; padding: 28px 20px; }
+  /* Contato */
+  .contato__grid { grid-template-columns: 1fr; gap: 40px; }
+  .contato__form { grid-template-columns: 1fr; padding: 28px 18px; gap: 16px; }
   .form__group--full { grid-column: auto; }
+  .contato__info { order: 1; }
+  .contato__form-wrap { order: 2; }
 
+  /* Footer */
   .footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; }
   .footer__bottom { flex-direction: column; gap: 8px; text-align: center; }
 }
 
+/* ---- 480px (Small phones) ---- */
 @media (max-width: 480px) {
-  .hero__actions { flex-direction: column; align-items: center; }
+  /* Global */
+  .sobre, .servicos, .numeros, .galeria, .depoimentos, .contato {
+    padding: 64px 0;
+  }
+  .section-header { margin-bottom: 32px; }
+  .container { padding: 0 16px; }
+
+  /* Hero */
+  .hero__content { padding: 80px 16px 48px; }
+  .hero__title { font-size: clamp(2.8rem, 14vw, 4.5rem); }
+  .hero__actions { flex-direction: column; align-items: stretch; width: 100%; max-width: 280px; margin: 0 auto 36px; }
+  .hero__actions .btn { justify-content: center; width: 100%; }
+  .hero__stats { gap: 12px; }
+  .hero__stat-divider { height: 22px; }
+
+  /* Sobre */
+  .sobre__img-wrap { height: 240px; }
+  .sobre__badge { font-size: 0.7rem; padding: 8px 12px; }
+
+  /* Serviços */
+  .servicos__grid { grid-template-columns: 1fr; }
+  .servicos__grid .card:last-child:nth-child(odd) { grid-column: auto; max-width: 100%; }
+
+  /* Números */
   .numeros__grid { grid-template-columns: 1fr 1fr; }
-  .footer__grid { grid-template-columns: 1fr; }
-  .galeria__grid { grid-template-columns: 1fr; }
+  .numero__val { font-size: clamp(2.2rem, 10vw, 3rem); }
+
+  /* Galeria */
+  .galeria__grid { grid-template-columns: 1fr; gap: 10px; }
   .galeria__item--large,
   .galeria__item--tall,
-  .galeria__item { height: 160px; }
+  .galeria__item { height: 200px; }
+
+  /* Depoimentos */
+  .depoimento { padding: 24px 20px; }
+
+  /* Contato */
+  .contato__form { padding: 24px 16px; }
+
+  /* Footer */
+  .footer__grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer__brand { text-align: center; }
+  .footer__brand .footer__social { justify-content: center; }
+  .footer__bottom { font-size: 0.78rem; }
+
+  /* Buttons */
+  .btn { font-size: 0.9rem; padding: 13px 24px; }
 }
