@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teste de VO₂ Máximo | COB Run · Clínica COB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ===== VO2 PAGE SPECIFIC ===== */
+    .vo2-hero {
+      padding: 160px 0 100px;
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+    }
+    .vo2-hero__bg-glow {
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 600px;
+      background: radial-gradient(ellipse, rgba(30,95,173,0.22) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .vo2-hero__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+    }
+    .vo2-hero__tag {
+      display: inline-block;
+      background: rgba(59,143,212,0.15);
+      border: 1px solid rgba(100,181,246,0.35);
+      color: var(--sky);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      padding: 7px 18px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+    }
+    .vo2-hero__title {
+      font-family: var(--font-head);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      letter-spacing: 2px;
+      line-height: 0.95;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    .vo2-hero__title span { color: var(--sky); display: block; }
+    .vo2-hero__desc {
+      font-size: 1.05rem;
+      color: var(--sky-light);
+      line-height: 1.75;
+      margin-bottom: 36px;
+      max-width: 500px;
+    }
+    .vo2-hero__actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .vo2-hero__photo-wrap {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      aspect-ratio: 4/5;
+      border: 1px solid rgba(100,181,246,0.15);
+      box-shadow: 0 24px 64px rgba(10,22,40,0.6);
+    }
+    .vo2-hero__photo {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+    }
+    .vo2-hero__photo-badge {
+      position: absolute;
+      bottom: 20px; left: 20px;
+      background: rgba(10,22,40,0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(100,181,246,0.25);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      font-size: 0.82rem;
+      color: var(--sky-light);
+    }
+    .vo2-hero__photo-badge strong { color: var(--white); display: block; font-size: 1rem; }
+
+    /* What is section */
+    .vo2-what {
+      padding: 100px 0;
+      background: var(--dark-blue);
+    }
+    .vo2-what__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .vo2-stat-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 36px;
+    }
+    .vo2-stat {
+      background: var(--navy);
+      border: 1px solid rgba(100,181,246,0.12);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+    .vo2-stat__num {
+      display: block;
+      font-family: var(--font-head);
+      font-size: 2.4rem;
+      color: var(--sky);
+      line-height: 1;
+    }
+    .vo2-stat__label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 6px;
+    }
+    .vo2-benefits {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .vo2-benefit {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 20px;
+      background: var(--navy);
+      border: 1px solid rgba(100,181,246,0.1);
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+    .vo2-benefit:hover {
+      border-color: rgba(59,143,212,0.35);
+      transform: translateX(4px);
+    }
+    .vo2-benefit__icon { font-size: 1.6rem; flex-shrink: 0; }
+    .vo2-benefit__title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+    .vo2-benefit__desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* How it works */
+    .vo2-como {
+      padding: 100px 0;
+      background: var(--navy);
+    }
+    .vo2-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .vo2-step {
+      position: relative;
+      background: var(--dark-blue);
+      border: 1px solid rgba(100,181,246,0.1);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      transition: var(--transition);
+    }
+    .vo2-step:hover {
+      border-color: rgba(59,143,212,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(30,95,173,0.25);
+    }
+    .vo2-step__num {
+      width: 44px; height: 44px;
+      background: var(--blue);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .vo2-step__title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .vo2-step__desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* Photo gallery / results */
+    .vo2-fotos {
+      padding: 100px 0;
+      background: var(--dark-blue);
+    }
+    .vo2-fotos__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .vo2-foto {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      position: relative;
+      border: 1px solid rgba(100,181,246,0.12);
+    }
+    .vo2-foto img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .vo2-foto:hover img { transform: scale(1.04); }
+    .vo2-foto__caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 28px 20px 16px;
+      background: linear-gradient(to top, rgba(10,22,40,0.9) 0%, transparent 100%);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    /* Results what you get */
+    .vo2-resultados {
+      padding: 100px 0;
+      background: var(--navy);
+    }
+    .vo2-resultados__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .vo2-resultado {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--dark-blue);
+      border: 1px solid rgba(100,181,246,0.1);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .vo2-resultado__icon {
+      width: 48px; height: 48px; min-width: 48px;
+      background: rgba(59,143,212,0.15);
+      border: 1px solid rgba(100,181,246,0.25);
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+    }
+    .vo2-resultado__title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .vo2-resultado__desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* CTA final */
+    .vo2-cta {
+      padding: 100px 0;
+      background: var(--dark-blue);
+      text-align: center;
+    }
+    .vo2-cta__inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .vo2-cta__title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .vo2-cta__title span { color: var(--sky); }
+    .vo2-cta__desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+    .vo2-cta__actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .vo2-cta__note {
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Back link */
+    .vo2-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: var(--transition);
+      position: absolute;
+      top: 90px; left: 0;
+    }
+    .vo2-back:hover { color: var(--sky); }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .vo2-steps { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .vo2-hero { padding: 120px 0 72px; }
+      .vo2-hero__inner { grid-template-columns: 1fr; gap: 40px; }
+      .vo2-hero__inner .vo2-hero__photo-wrap { order: -1; aspect-ratio: 16/9; }
+      .vo2-hero__title { font-size: clamp(2.8rem, 12vw, 4.5rem); }
+      .vo2-what__inner { grid-template-columns: 1fr; gap: 48px; }
+      .vo2-steps { grid-template-columns: 1fr; gap: 16px; }
+      .vo2-fotos__grid { grid-template-columns: 1fr; }
+      .vo2-resultados__grid { grid-template-columns: 1fr; }
+      .vo2-cta__actions { flex-direction: column; align-items: center; }
+      .vo2-cta__actions .btn { width: 100%; max-width: 320px; justify-content: center; }
+      .vo2-what, .vo2-como, .vo2-fotos, .vo2-resultados, .vo2-cta { padding: 72px 0; }
+      .vo2-back { position: static; margin-bottom: 32px; display: inline-flex; }
+    }
+    @media (max-width: 480px) {
+      .vo2-stat-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav scrolled" id="navbar">
+    <div class="nav__container">
+      <a href="index.html" class="nav__logo">
+        <img src="img/logo.jpg" alt="COB Run" class="nav__logo-img" />
+      </a>
+      <ul class="nav__links">
+        <li><a href="index.html#sobre">Sobre</a></li>
+        <li><a href="index.html#servicos">Serviços</a></li>
+        <li><a href="planos.html">Planos</a></li>
+        <li><a href="vo2.html" style="color:var(--sky)">VO₂ Máximo</a></li>
+        <li><a href="index.html#galeria">Galeria</a></li>
+        <li><a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="nav__cta">💬 Fale Conosco</a></li>
+      </ul>
+      <button class="nav__hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="index.html#sobre" class="mobile-link">Sobre</a></li>
+      <li><a href="index.html#servicos" class="mobile-link">Serviços</a></li>
+      <li><a href="planos.html" class="mobile-link">Planos</a></li>
+      <li><a href="vo2.html" class="mobile-link">VO₂ Máximo</a></li>
+      <li><a href="index.html#galeria" class="mobile-link">Galeria</a></li>
+      <li><a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="mobile-link">💬 Fale Conosco</a></li>
+    </ul>
+  </div>
+
+  <!-- HERO -->
+  <section class="vo2-hero">
+    <div class="vo2-hero__bg-glow"></div>
+    <div class="container" style="position:relative">
+      <a href="index.html" class="vo2-back">← Voltar ao site</a>
+      <div class="vo2-hero__inner">
+        <div>
+          <span class="vo2-hero__tag">Clínica COB · Florianópolis</span>
+          <h1 class="vo2-hero__title">Teste de<br/><span>VO₂ Máximo</span></h1>
+          <p class="vo2-hero__desc">
+            Descubra o potencial real do seu corpo com a análise mais precisa de performance aeróbica disponível. Treine com ciência, não com achismo.
+          </p>
+          <div class="vo2-hero__actions">
+            <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20agendar%20o%20Teste%20de%20VO2%20Máximo%20na%20Clínica%20COB!" target="_blank" class="btn btn--primary">
+              💬 Agendar Teste
+            </a>
+            <a href="#como-funciona" class="btn btn--outline">
+              Como funciona ↓
+            </a>
+          </div>
+        </div>
+        <div class="vo2-hero__photo-wrap reveal">
+          <img src="img/WhatsApp Image 2026-03-17 at 23.14.23.jpeg" alt="Teste de VO₂ Máximo na Clínica COB" class="vo2-hero__photo" />
+          <div class="vo2-hero__photo-badge">
+            <strong>Clínica COB</strong>
+            Av. Madre Benvenuta, 943 · Florianópolis
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- O QUE É VO2 -->
+  <section class="vo2-what">
+    <div class="container">
+      <div class="vo2-what__inner">
+        <div>
+          <p class="section-tag">O que é</p>
+          <h2 class="section-title">A medida de ouro da <span>performance</span></h2>
+          <p style="color:var(--sky-light);line-height:1.8;margin-bottom:16px">
+            O VO₂ máximo é a capacidade máxima do seu organismo de captar, transportar e utilizar oxigênio durante o exercício físico intenso.
+          </p>
+          <p style="color:var(--text-muted);line-height:1.8">
+            É considerado o principal marcador de aptidão cardiorrespiratória e um dos indicadores mais precisos do seu potencial como corredor — permitindo treinos calibrados com precisão científica.
+          </p>
+          <div class="vo2-stat-row">
+            <div class="vo2-stat">
+              <span class="vo2-stat__num">100%</span>
+              <span class="vo2-stat__label">Individualizado</span>
+            </div>
+            <div class="vo2-stat">
+              <span class="vo2-stat__num">~60min</span>
+              <span class="vo2-stat__label">Duração do teste</span>
+            </div>
+            <div class="vo2-stat">
+              <span class="vo2-stat__num">5+</span>
+              <span class="vo2-stat__label">Métricas geradas</span>
+            </div>
+            <div class="vo2-stat">
+              <span class="vo2-stat__num">COB</span>
+              <span class="vo2-stat__label">Clínica especializada</span>
+            </div>
+          </div>
+        </div>
+        <div class="vo2-benefits reveal">
+          <div class="vo2-benefit">
+            <span class="vo2-benefit__icon">🎯</span>
+            <div>
+              <p class="vo2-benefit__title">Zonas de treino precisas</p>
+              <p class="vo2-benefit__desc">Saiba exatamente em qual intensidade treinar para maximizar resultados e evitar overtraining</p>
+            </div>
+          </div>
+          <div class="vo2-benefit">
+            <span class="vo2-benefit__icon">📈</span>
+            <div>
+              <p class="vo2-benefit__title">Planilha calibrada com ciência</p>
+              <p class="vo2-benefit__desc">Seus treinos na COB Run passam a ser ajustados com base nos seus limiares aeróbico e anaeróbico reais</p>
+            </div>
+          </div>
+          <div class="vo2-benefit">
+            <span class="vo2-benefit__icon">🩺</span>
+            <div>
+              <p class="vo2-benefit__title">Evolução mensurável</p>
+              <p class="vo2-benefit__desc">Repita o teste periodicamente e veja com números o quanto você evoluiu com os treinos</p>
+            </div>
+          </div>
+          <div class="vo2-benefit">
+            <span class="vo2-benefit__icon">🛡️</span>
+            <div>
+              <p class="vo2-benefit__title">Prevenção de lesões</p>
+              <p class="vo2-benefit__desc">Treinar nas zonas certas reduz o risco de overtraining, lesões por sobrecarga e fadiga crônica</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="vo2-como" id="como-funciona">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">Passo a passo</p>
+        <h2 class="section-title">Como funciona <span>o teste</span></h2>
+        <p style="color:var(--text-muted);font-size:0.95rem;margin-top:8px">Realizado na Clínica COB em Florianópolis, com equipamentos de última geração</p>
+      </div>
+      <div class="vo2-steps">
+        <div class="vo2-step reveal">
+          <div class="vo2-step__num">1</div>
+          <h3 class="vo2-step__title">Anamnese inicial</h3>
+          <p class="vo2-step__desc">Levantamento do histórico esportivo, objetivos e nível de condicionamento atual com o Coach Matheus Ohl antes do teste.</p>
+        </div>
+        <div class="vo2-step reveal">
+          <div class="vo2-step__num">2</div>
+          <h3 class="vo2-step__title">Aquecimento controlado</h3>
+          <p class="vo2-step__desc">Início gradual em esteira com intensidade baixa para preparar o organismo e calibrar os equipamentos de medição.</p>
+        </div>
+        <div class="vo2-step reveal">
+          <div class="vo2-step__num">3</div>
+          <h3 class="vo2-step__title">Teste progressivo com máscara</h3>
+          <p class="vo2-step__desc">Uso de máscara analisadora de gases com incrementos de carga a cada estágio até a exaustão voluntária máxima.</p>
+        </div>
+        <div class="vo2-step reveal">
+          <div class="vo2-step__num">4</div>
+          <h3 class="vo2-step__title">Monitoramento em tempo real</h3>
+          <p class="vo2-step__desc">Frequência cardíaca, saturação de oxigênio, ventilação pulmonar e trocas gasosas monitoradas continuamente durante toda a avaliação.</p>
+        </div>
+        <div class="vo2-step reveal">
+          <div class="vo2-step__num">5</div>
+          <h3 class="vo2-step__title">Análise dos dados</h3>
+          <p class="vo2-step__desc">Processamento dos resultados pelo coach para identificar os limiares aeróbico, anaeróbico e o VO₂ máximo alcançado.</p>
+        </div>
+        <div class="vo2-step reveal">
+          <div class="vo2-step__num">6</div>
+          <h3 class="vo2-step__title">Relatório + planilha ajustada</h3>
+          <p class="vo2-step__desc">Entrega de relatório completo com suas zonas de frequência cardíaca e ajuste imediato da sua planilha de treinos com base nos resultados.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOTOS -->
+  <section class="vo2-fotos">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">Na prática</p>
+        <h2 class="section-title">Dentro da <span>Clínica COB</span></h2>
+      </div>
+      <div class="vo2-fotos__grid">
+        <div class="vo2-foto reveal">
+          <img src="img/WhatsApp Image 2026-03-17 at 23.14.23.jpeg" alt="Teste de VO2 na Clínica COB" />
+          <div class="vo2-foto__caption">Avaliação com máscara analisadora de gases 🫁</div>
+        </div>
+        <div class="vo2-foto reveal">
+          <img src="img/WhatsApp Image 2026-03-17 at 23.14.23 (1).jpeg" alt="Teste de VO2 na Clínica COB" />
+          <div class="vo2-foto__caption">Monitoramento em tempo real com o coach 📊</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- O QUE VOCÊ RECEBE -->
+  <section class="vo2-resultados">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">O que você leva</p>
+        <h2 class="section-title">Resultados <span>completos</span></h2>
+      </div>
+      <div class="vo2-resultados__grid">
+        <div class="vo2-resultado reveal">
+          <div class="vo2-resultado__icon">🔬</div>
+          <div>
+            <p class="vo2-resultado__title">VO₂ máximo (ml/kg/min)</p>
+            <p class="vo2-resultado__desc">Seu valor absoluto de consumo máximo de oxigênio — o número que define seu potencial aeróbico e te posiciona no ranking de desempenho.</p>
+          </div>
+        </div>
+        <div class="vo2-resultado reveal">
+          <div class="vo2-resultado__icon">❤️</div>
+          <div>
+            <p class="vo2-resultado__title">Zonas de frequência cardíaca</p>
+            <p class="vo2-resultado__desc">5 zonas individualizadas com os batimentos ideais para cada tipo de treino: recuperação, base aeróbica, limiar, intensidade e pico.</p>
+          </div>
+        </div>
+        <div class="vo2-resultado reveal">
+          <div class="vo2-resultado__icon">📉</div>
+          <div>
+            <p class="vo2-resultado__title">Limiar aeróbico e anaeróbico</p>
+            <p class="vo2-resultado__desc">Identificação dos dois pontos críticos de transição metabólica — fundamentais para distribuir corretamente o volume e a intensidade dos treinos.</p>
+          </div>
+        </div>
+        <div class="vo2-resultado reveal">
+          <div class="vo2-resultado__icon">📋</div>
+          <div>
+            <p class="vo2-resultado__title">Relatório completo de performance</p>
+            <p class="vo2-resultado__desc">Documento detalhado com todos os dados do teste, interpretação dos resultados e recomendações práticas para a sua evolução.</p>
+          </div>
+        </div>
+        <div class="vo2-resultado reveal">
+          <div class="vo2-resultado__icon">🏃</div>
+          <div>
+            <p class="vo2-resultado__title">Planilha ajustada pelo coach</p>
+            <p class="vo2-resultado__desc">Sua planilha de treinos é imediatamente recalibrada com base nos dados do teste, garantindo estímulos no ritmo e zona certos para você.</p>
+          </div>
+        </div>
+        <div class="vo2-resultado reveal">
+          <div class="vo2-resultado__icon">🔄</div>
+          <div>
+            <p class="vo2-resultado__title">Reavaliação e acompanhamento</p>
+            <p class="vo2-resultado__desc">Recomendação de periodicidade para reteste e comparativo de evolução ao longo do tempo — ideal para ver o progresso em números concretos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="vo2-cta">
+    <div class="container">
+      <div class="vo2-cta__inner">
+        <p class="section-tag" style="text-align:center">Pronto para descobrir seu potencial?</p>
+        <h2 class="vo2-cta__title">Agende seu <span>Teste de VO₂</span> hoje</h2>
+        <p class="vo2-cta__desc">
+          Entre em contato pelo WhatsApp e agende sua avaliação na Clínica COB. O teste está disponível para atletas de todos os níveis — iniciantes e veteranos.
+        </p>
+        <div class="vo2-cta__actions">
+          <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20agendar%20o%20Teste%20de%20VO2%20Máximo%20na%20Clínica%20COB!" target="_blank" class="btn btn--primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Agendar pelo WhatsApp
+          </a>
+          <a href="planos.html" class="btn btn--outline">Ver Planos →</a>
+        </div>
+        <p class="vo2-cta__note">📍 Clínica COB · Av. Madre Benvenuta, 943 · Santa Mônica · Florianópolis – SC</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="img/logo.jpg" alt="COB Run" class="footer__logo-img" />
+          <p>Correndo juntos,<br/>chegando mais longe.</p>
+          <p class="footer__address">📍 Av. Madre Benvenuta, 943<br/>Santa Mônica · Florianópolis – SC</p>
+        </div>
+        <div class="footer__links">
+          <h4>Links</h4>
+          <ul>
+            <li><a href="index.html#sobre">Sobre</a></li>
+            <li><a href="index.html#servicos">Serviços</a></li>
+            <li><a href="planos.html">Planos</a></li>
+            <li><a href="vo2.html">VO₂ Máximo</a></li>
+            <li><a href="index.html#galeria">Galeria</a></li>
+            <li><a href="index.html#contato">Contato</a></li>
+          </ul>
+        </div>
+        <div class="footer__links">
+          <h4>Serviços</h4>
+          <ul>
+            <li><a href="index.html#servicos">Treinos em Grupo</a></li>
+            <li><a href="index.html#servicos">Planilha Individual</a></li>
+            <li><a href="index.html#servicos">Assessoria em Provas</a></li>
+            <li><a href="vo2.html">Teste de VO₂ Máximo</a></li>
+          </ul>
+        </div>
+        <div class="footer__social-col">
+          <h4>Redes Sociais</h4>
+          <div class="footer__social">
+            <a href="https://instagram.com/cobrun.assessoria" target="_blank" class="social-btn social-btn--sm" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="social-btn social-btn--sm" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 2024 COB Run. Todos os direitos reservados.</p>
+        <p>Feito com ❤️ para corredores</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WHATSAPP FLUTUANTE -->
+  <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="whatsapp-float" aria-label="Fale pelo WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    <span class="whatsapp-float__label">Fale Conosco</span>
+  </a>
+
+  <script src="script.js"></script>
+</body>
+</html>
