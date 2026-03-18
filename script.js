@@ -158,6 +158,18 @@ window.addEventListener('scroll', () => {
   });
 });
 
+// ---- SLIDESHOW SOBRE ----
+(function initSobreSlideshow() {
+  const slides = document.querySelectorAll('#sobreSlideshow .sobre__slide');
+  if (slides.length < 2) return;
+  let current = 0;
+  setInterval(() => {
+    slides[current].classList.remove('sobre__slide--active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('sobre__slide--active');
+  }, 4000);
+})();
+
 // ---- PARALLAX HERO LINES (só desktop) ----
 if (window.innerWidth > 768) {
   window.addEventListener('scroll', () => {
