@@ -4,41 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Mounjaro — COB Clínica</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --fundo: #f0f4fa;
+    --fundo: #f4f6fa;
     --branco: #ffffff;
     --texto: #0f1e35;
-    --texto2: #5a6e8a;
-    --azul: #1a3a6b;
-    --azul-claro: #2d6aad;
-    --azul-bg: #e4edf8;
-    --azul-borda: #b8cfe8;
+    --texto2: #4a5f7a;
+    --azul: #0f1e35;
+    --azul-medio: #1a3a6b;
+    --azul-claro: #2355a0;
+    --azul-bg: #e8eef8;
+    --azul-borda: #b8cce0;
+    --dourado: #a07828;
+    --dourado-bg: #fdf8ee;
+    --dourado-borda: #ddc878;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--fundo); color:var(--texto); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
+  body { background:var(--fundo); color:var(--texto); font-family:'Outfit',sans-serif; min-height:100vh; overflow-x:hidden; }
   .header { text-align:center; padding:40px 24px 0; }
-  .logo { font-family:'Playfair Display',serif; font-size:12px; letter-spacing:6px; text-transform:uppercase; color:var(--azul); margin-bottom:40px; }
+  .logo { font-family:'Outfit',sans-serif; font-size:12px; letter-spacing:6px; text-transform:uppercase; color:var(--azul); margin-bottom:40px; }
   .container { max-width:620px; margin:0 auto; padding:0 20px 80px; }
 
   /* INTRO */
   .intro { text-align:center; padding-bottom:40px; }
-  .intro h1 { font-family:'Playfair Display',serif; font-size:clamp(26px,6vw,42px); font-weight:900; line-height:1.15; margin-bottom:16px; color:var(--azul); }
+  .intro h1 { font-family:'Outfit',sans-serif; font-size:clamp(26px,6vw,42px); font-weight:900; line-height:1.15; margin-bottom:16px; color:var(--azul); }
   .intro h1 span { color:var(--azul-claro); font-style:italic; }
-  .intro p { font-size:15px; line-height:1.75; color:var(--texto2); margin-bottom:28px; }
+  .intro p { font-size:17px; line-height:1.8; color:var(--texto2); margin-bottom:36px; font-weight:400; }
 
   .stats-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:32px; }
-  .stat-item { background:var(--branco); border:1px solid var(--azul-borda); border-radius:10px; padding:16px 10px; text-align:center; }
-  .stat-num { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--azul); display:block; }
-  .stat-label { font-size:10px; color:var(--texto2); line-height:1.4; margin-top:4px; display:block; }
+  .stat-item { background:var(--branco); border:1px solid var(--azul-borda); border-radius:12px; padding:20px 12px; text-align:center; box-shadow:0 2px 12px rgba(15,30,53,0.06); }
+  .stat-num { font-family:'Outfit',sans-serif; font-size:22px; font-weight:700; color:var(--azul); display:block; }
+  .stat-label { font-size:11px; color:var(--texto2); line-height:1.5; margin-top:6px; display:block; font-weight:400; }
 
   .escolha-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .escolha-card { background:var(--branco); border:2px solid var(--azul-borda); border-radius:12px; padding:24px 16px; text-align:center; cursor:pointer; transition:all 0.25s; }
   .escolha-card:hover { border-color:var(--azul-claro); background:var(--azul-bg); transform:translateY(-2px); box-shadow:0 4px 20px rgba(26,58,107,0.1); }
   .escolha-card .ic { font-size:28px; margin-bottom:10px; }
-  .escolha-card h3 { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; margin-bottom:6px; color:var(--azul); }
-  .escolha-card p { font-size:12px; color:var(--texto2); line-height:1.5; }
+  .escolha-card h3 { font-family:'Outfit',sans-serif; font-size:16px; font-weight:700; margin-bottom:6px; color:var(--azul); }
+  .escolha-card p { font-size:14px; color:var(--texto2); line-height:1.6; font-weight:400; }
 
   /* QUIZ */
   .quiz-section { display:none; }
@@ -46,44 +50,44 @@
 
   .progresso { margin-bottom:32px; }
   .prog-topo { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-  .prog-label { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--azul); }
-  .prog-num { font-size:10px; color:var(--texto2); }
+  .prog-label { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--azul-claro); font-weight:500; }
+  .prog-num { font-size:12px; color:var(--texto2); font-weight:400; }
   .barra-f { height:3px; background:var(--azul-borda); border-radius:2px; overflow:hidden; }
   .barra-p { height:100%; background:var(--azul-claro); border-radius:2px; transition:width 0.45s ease; }
 
   /* INTERVENCAO */
-  .interv { display:none; background:var(--azul-bg); border:1px solid var(--azul-borda); border-left:4px solid var(--azul-claro); border-radius:12px; padding:18px 22px; margin-bottom:20px; animation:fs 0.35s ease; }
+  .interv { display:none; background:var(--azul-bg); border:1px solid var(--azul-borda); border-left:4px solid var(--azul-claro); border-radius:12px; padding:20px 24px; margin-bottom:22px; animation:fs 0.35s ease; }
   .interv.vis { display:block; }
-  .interv-badge { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--azul-claro); margin-bottom:8px; font-weight:600; }
-  .interv-txt { font-size:14px; line-height:1.7; color:var(--azul); }
-  .interv-dado { margin-top:12px; background:var(--branco); border-radius:8px; padding:12px 14px; font-size:13px; color:var(--azul); font-style:italic; border:1px solid var(--azul-borda); }
-  .interv-dado strong { color:var(--azul-claro); font-style:normal; }
+  .interv-badge { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--azul-claro); margin-bottom:10px; font-weight:600; }
+  .interv-txt { font-size:15px; line-height:1.8; color:var(--texto); font-weight:400; }
+  .interv-dado { margin-top:14px; background:var(--branco); border-radius:8px; padding:14px 16px; font-size:14px; color:var(--texto2); font-style:italic; border:1px solid var(--azul-borda); }
+  .interv-dado strong { color:var(--azul-medio); font-style:normal; font-weight:600; }
 
   /* PERGUNTA */
   .perg-wrap { opacity:0; transform:translateY(14px); transition:all 0.35s ease; }
   .perg-wrap.vis { opacity:1; transform:translateY(0); }
-  .perg-num { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--azul-borda); margin-bottom:14px; }
-  .perg-txt { font-family:'Playfair Display',serif; font-size:clamp(19px,4vw,25px); font-weight:700; line-height:1.3; margin-bottom:8px; color:var(--azul); }
-  .perg-sub { font-size:13px; color:var(--texto2); margin-bottom:26px; line-height:1.65; }
+  .perg-num { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--azul-borda); margin-bottom:16px; font-weight:500; }
+  .perg-txt { font-family:'Outfit',sans-serif; font-size:clamp(19px,4vw,25px); font-weight:700; line-height:1.3; margin-bottom:8px; color:var(--azul); }
+  .perg-sub { font-size:15px; color:var(--texto2); margin-bottom:28px; line-height:1.75; font-weight:400; }
 
   .opcoes { display:flex; flex-direction:column; gap:10px; }
-  .opcao { background:var(--branco); border:1.5px solid #d8e2f0; border-radius:10px; padding:15px 17px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:12px; }
-  .opcao:hover { border-color:var(--azul-claro); background:var(--azul-bg); }
-  .opcao.sel { border-color:var(--azul-claro); background:var(--azul-bg); }
-  .op-letra { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--azul-borda); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--texto2); flex-shrink:0; transition:all 0.2s; }
+  .opcao { background:var(--branco); border:1.5px solid var(--azul-borda); border-radius:12px; padding:18px 22px; cursor:pointer; transition:all 0.25s; display:flex; align-items:center; gap:16px; box-shadow:0 1px 6px rgba(15,30,53,0.05); }
+  .opcao:hover { border-color:var(--azul-claro); background:var(--azul-bg); box-shadow:0 2px 12px rgba(35,85,160,0.1); }
+  .opcao.sel { border-color:var(--azul-claro); background:var(--azul-bg); box-shadow:0 2px 16px rgba(35,85,160,0.12); }
+  .op-letra { width:34px; height:34px; border-radius:50%; border:1.5px solid var(--azul-borda); display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--texto2); flex-shrink:0; transition:all 0.25s; font-weight:500; }
   .opcao.sel .op-letra { background:var(--azul-claro); border-color:var(--azul-claro); color:#fff; }
-  .op-txt { font-size:14px; color:var(--texto2); line-height:1.5; }
-  .opcao.sel .op-txt { color:var(--azul); font-weight:500; }
+  .op-txt { font-size:15px; color:var(--texto2); line-height:1.6; font-weight:400; }
+  .opcao.sel .op-txt { color:var(--azul-medio); font-weight:500; }
 
-  .btn-prox { margin-top:26px; width:100%; padding:16px; background:var(--azul); color:#fff; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s; display:none; }
-  .btn-prox:hover { background:var(--azul-claro); transform:translateY(-1px); box-shadow:0 4px 16px rgba(26,58,107,0.2); }
+  .btn-prox { margin-top:28px; width:100%; padding:18px; background:var(--azul-medio); color:#fff; border:none; border-radius:12px; font-family:'Outfit',sans-serif; font-size:15px; font-weight:500; cursor:pointer; transition:all 0.25s; display:none; }
+  .btn-prox:hover { background:var(--azul-claro); transform:translateY(-1px); box-shadow:0 6px 20px rgba(35,85,160,0.2); }
   .btn-prox.vis { display:block; }
 
   /* RESULTADO */
   .resultado { display:none; }
   .resultado.ativo { display:block; }
 
-  .res-card { border-radius:14px; padding:36px 26px; text-align:center; margin-bottom:18px; border:1.5px solid; }
+  .res-card { border-radius:16px; padding:44px 32px; text-align:center; margin-bottom:20px; border:1.5px solid; box-shadow:0 4px 24px rgba(15,30,53,0.07); }
   .res-card.otimo { background:#eaf5ef; border-color:#a8d5bc; }
   .res-card.atencao { background:#fef9ec; border-color:#e8d49a; }
   .res-card.risco { background:#fdf0f0; border-color:#e8aaaa; }
@@ -94,28 +98,28 @@
   .atencao .res-badge { background:#fde8a0; color:#7a5800; }
   .risco .res-badge { background:#f8cccc; color:#a01010; }
 
-  .res-titulo { font-family:'Playfair Display',serif; font-size:clamp(20px,4vw,28px); font-weight:900; line-height:1.2; margin-bottom:12px; color:var(--azul); }
-  .res-desc { font-size:14px; line-height:1.8; color:var(--texto2); margin-bottom:24px; }
+  .res-titulo { font-family:'Outfit',sans-serif; font-size:clamp(20px,4vw,28px); font-weight:900; line-height:1.2; margin-bottom:12px; color:var(--azul); }
+  .res-desc { font-size:16px; line-height:1.85; color:var(--texto2); margin-bottom:28px; font-weight:400; }
 
   .dado-prova { background:var(--branco); border:1px solid var(--azul-borda); border-radius:10px; padding:16px; margin-bottom:22px; }
-  .dado-num { font-family:'Playfair Display',serif; font-size:30px; font-weight:700; color:var(--azul); }
-  .dado-txt { font-size:11px; color:var(--texto2); margin-top:4px; line-height:1.5; }
+  .dado-num { font-family:'Outfit',sans-serif; font-size:30px; font-weight:700; color:var(--azul); }
+  .dado-txt { font-size:13px; color:var(--texto2); margin-top:6px; line-height:1.6; font-weight:400; }
 
   .res-pontos { text-align:left; margin-bottom:24px; }
-  .ponto { display:flex; align-items:flex-start; gap:10px; padding:11px 0; border-bottom:1px solid var(--azul-borda); }
+  .ponto { display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid var(--azul-borda); }
   .ponto:last-child { border-bottom:none; }
   .ponto-ic { font-size:14px; flex-shrink:0; margin-top:2px; }
-  .ponto-txt { font-size:13px; color:var(--texto2); line-height:1.65; }
-  .ponto-txt strong { color:var(--azul); }
+  .ponto-txt { font-size:15px; color:var(--texto2); line-height:1.75; font-weight:400; }
+  .ponto-txt strong { color:var(--azul-medio); font-weight:600; }
 
-  .btn-wpp { display:block; width:100%; padding:17px; background:#25D366; color:#fff; border:none; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500; cursor:pointer; text-decoration:none; text-align:center; transition:all 0.2s; margin-bottom:10px; }
-  .btn-wpp:hover { background:#1fba58; transform:translateY(-1px); }
+  .btn-wpp { display:block; width:100%; padding:18px; background:#1a7c44; color:#fff; border:none; border-radius:12px; font-family:'Outfit',sans-serif; font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; text-align:center; transition:all 0.25s; margin-bottom:10px; letter-spacing:0.3px; }
+  .btn-wpp:hover { background:#155f34; transform:translateY(-1px); box-shadow:0 6px 20px rgba(26,124,68,0.25); }
 
   .disc { font-size:11px; color:#999; text-align:center; line-height:1.6; margin-top:12px; }
-  .div { height:1px; background:var(--azul-borda); margin:28px 0; }
+  .div { height:1px; background:var(--azul-borda); margin:32px 0; }
 
-  .btn-rei { background:none; border:1px solid var(--azul-borda); color:var(--texto2); padding:12px 24px; border-radius:8px; cursor:pointer; font-size:12px; width:100%; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
-  .btn-rei:hover { border-color:var(--azul-claro); color:var(--azul); }
+  .btn-rei { background:none; border:1px solid var(--azul-borda); color:var(--texto2); padding:12px 24px; border-radius:8px; cursor:pointer; font-size:12px; width:100%; transition:all 0.2s; font-family:'Outfit',sans-serif; }
+  .btn-rei:hover { border-color:var(--azul-claro); color:var(--azul-claro); }
 
   @keyframes fs { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
   @media(max-width:480px){ .escolha-grid{grid-template-columns:1fr} .res-card{padding:26px 16px} }
@@ -130,8 +134,8 @@
     <p>Responda 7 perguntas e descubra se o seu protocolo está no caminho certo — ou se algo importante está sendo ignorado.</p>
     <div class="stats-strip">
       <div class="stat-item"><span class="stat-num">340+</span><span class="stat-label">pacientes em protocolo ativo na COB</span></div>
-      <div class="stat-item"><span class="stat-num">78%</span><span class="stat-label">chegaram estagnados em outra clínica</span></div>
-      <div class="stat-item"><span class="stat-num">91%</span><span class="stat-label">voltaram a progredir em até 60 dias</span></div>
+      <div class="stat-item"><span class="stat-num">78%</span><span class="stat-label">chegaram estagnados de outra clínica</span></div>
+      <div class="stat-item"><span class="stat-num">91%</span><span class="stat-label">voltaram a progredir em até 2 semanas</span></div>
     </div>
     <div class="escolha-grid">
       <div class="escolha-card" onclick="iniciar('usa')"><div class="ic">💉</div><h3>Já uso o Mounjaro</h3><p>Quero saber se estou fazendo uso correto</p></div>
@@ -175,7 +179,7 @@ const Q = {
       {l:"A",tx:"Sim, treino musculação ou funcional regularmente",p:3},
       {l:"B",tx:"Faço algo leve, mas sem consistência",p:1,iv:{tx:"Treino leve e inconsistente não protege a massa muscular durante o déficit calórico causado pelo Mounjaro. Intensidade e regularidade importam.",d:"Na COB, o <strong>treinador trabalha em sinergia com nutricionista e médico</strong>. É um protocolo único, não três coisas separadas."}},
       {l:"C",tx:"Não faço treino de força",p:0,iv:{tx:"Sem treino de força, até 30% do peso perdido com GLP-1 pode ser massa muscular. Isso compromete o metabolismo e aumenta o risco de efeito sanfona.",d:"<strong>Todos os pacientes da COB</strong> recebem protocolo de treino junto com o nutricional e médico."}},
-      {l:"D",tx:"Parei — me sinto sem energia para treinar",p:-1,iv:{tx:"Falta de energia durante o uso é sinal de alerta — pode indicar ingestão insuficiente, déficit de proteína ou desequilíbrio hormonal. Precisa ser investigado.",d:"Na COB, <strong>suporte 24h com a equipe</strong> significa que você não precisa esperar a próxima consulta para relatar qualquer sintoma."}}
+      {l:"D",tx:"Parei — me sinto sem energia para treinar",p:-1,iv:{tx:"Falta de energia durante o uso é sinal de alerta — pode indicar ingestão insuficiente, déficit de proteína ou desequilíbrio hormonal. Precisa ser investigado.",d:"Na COB, <strong>suporte diário com a equipe</strong> significa que você não precisa esperar a próxima consulta para relatar qualquer sintoma."}}
     ]},
     { t:"Como você lida com a parte emocional e comportamental do emagrecimento?", s:"A caneta resolve o físico — mas padrões mentais e relação com comida precisam de atenção para o resultado durar.", ops:[
       {l:"A",tx:"Tenho acompanhamento psicológico ou de comportamento alimentar",p:3},
@@ -191,7 +195,7 @@ const Q = {
     ]},
     { t:"Como você avalia seu resultado até agora?", s:"Seja honesto — isso ajuda a identificar onde está o travamento.", ops:[
       {l:"A",tx:"Excelente — perco peso consistentemente e me sinto bem",p:3},
-      {l:"B",tx:"Bom no início, mas travou nos últimos meses",p:1,iv:{tx:"Platô é o sinal mais claro de que algo precisa ser ajustado — dose, alimentação, treino ou hormônios. Não é o corpo resistindo à caneta.",d:"Dos pacientes que chegam à COB em platô, <strong>91% voltam a progredir em até 60 dias</strong> com o protocolo revisado."}},
+      {l:"B",tx:"Bom no início, mas travou nos últimos meses",p:1,iv:{tx:"Platô é o sinal mais claro de que algo precisa ser ajustado — dose, alimentação, treino ou hormônios. Não é o corpo resistindo à caneta.",d:"Dos pacientes que chegam à COB em platô, <strong>91% voltam a progredir em até 2 semanas</strong> com o protocolo revisado."}},
       {l:"C",tx:"Resultado abaixo do esperado desde o começo",p:0,iv:{tx:"Resultado fraco desde o início quase sempre indica fator subjacente — desregulação hormonal é o mais comum, especialmente após os 35 anos.",d:"Na COB, a avaliação inclui <strong>painel hormonal completo</strong>. Em muitos casos, a reposição hormonal em paralelo é o que destrava o resultado."}},
       {l:"D",tx:"Perco peso mas me sinto fraco e sem energia",p:0,iv:{tx:"Perder peso sentindo-se mal não é resultado — é sinal de protocolo desequilibrado. Fraqueza indica perda de músculo ou ingestão inadequada de nutrientes.",d:"Na COB, o bem-estar é monitorado junto com o resultado. <strong>Sentir-se bem durante o processo</strong> é parte do protocolo."}}
     ]},
@@ -249,6 +253,23 @@ const Q = {
 };
 
 let tipo='', atual=0, pts=0, selIdx=null, selPts=null;
+
+// Patch: remover iv de perguntas não autorizadas
+(function() {
+  var permitidosUsa = [0, 4];
+  var permitidosQuer = [2];
+  Q.usa.forEach(function(p, i) {
+    if (permitidosUsa.indexOf(i) === -1) {
+      p.ops.forEach(function(op) { delete op.iv; });
+    }
+  });
+  Q.quer.forEach(function(p, i) {
+    if (permitidosQuer.indexOf(i) === -1) {
+      p.ops.forEach(function(op) { delete op.iv; });
+    }
+  });
+})();
+
 
 function iniciar(t){
   tipo=t; atual=0; pts=0; selIdx=null; selPts=null;
@@ -330,7 +351,7 @@ function gerarRes(){
       nv='atencao';badge='⚠️ Lacunas identificadas';ic='🔍';
       tit='Seu protocolo tem pontos críticos em aberto';
       desc='Você está usando o Mounjaro, mas elementos essenciais estão faltando. Isso pode explicar resultado abaixo do esperado.';
-      dnum='78%';dtxt='dos pacientes em platô que chegam à COB voltam a progredir em até 60 dias';
+      dnum='78%';dtxt='dos pacientes em platô que chegam à COB voltam a progredir em até 2 semanas';
       pontos=[
         {i:'⚠️',t:'<strong>Sem nutrição adequada</strong>, a caneta pode causar perda de músculo — comprometendo o metabolismo a longo prazo.'},
         {i:'⚠️',t:'<strong>Suporte comportamental e de treino</strong> separam resultado temporário de resultado permanente.'},
