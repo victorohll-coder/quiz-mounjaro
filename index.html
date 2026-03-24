@@ -30,12 +30,14 @@
   .intro { text-align:center; padding-bottom:40px; }
   .intro h1 { font-family:'Outfit',sans-serif; font-size:clamp(26px,6vw,42px); font-weight:900; line-height:1.15; margin-bottom:16px; color:var(--azul); }
   .intro h1 span { color:var(--azul-claro); font-style:italic; }
-  .intro p { font-size:17px; line-height:1.8; color:var(--texto2); margin-bottom:36px; font-weight:400; }
+  .intro p { font-size:16px; line-height:1.8; color:var(--texto2); margin-bottom:16px; font-weight:400; }
+  .intro-sub { font-size:20px !important; font-weight:600 !important; color:var(--azul) !important; margin-bottom:8px !important; line-height:1.4 !important; }
 
   .stats-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:32px; }
   .stat-item { background:var(--branco); border:1px solid var(--azul-borda); border-radius:12px; padding:20px 12px; text-align:center; box-shadow:0 2px 12px rgba(15,30,53,0.06); }
   .stat-num { font-family:'Outfit',sans-serif; font-size:22px; font-weight:700; color:var(--azul); display:block; }
-  .stat-label { font-size:11px; color:var(--texto2); line-height:1.5; margin-top:6px; display:block; font-weight:400; }
+  .stat-label { font-size:11px; color:var(--texto2); line-height:1.5; margin-top:6px; display:block; font-weight:500; }
+  .stat-contexto { font-size:10px; color:var(--azul-claro); display:block; margin-top:3px; font-style:italic; font-weight:400; }
 
   .escolha-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .escolha-card { background:var(--branco); border:2px solid var(--azul-borda); border-radius:12px; padding:24px 16px; text-align:center; cursor:pointer; transition:all 0.25s; }
@@ -116,6 +118,7 @@
   .btn-wpp:hover { background:#155f34; transform:translateY(-1px); box-shadow:0 6px 20px rgba(26,124,68,0.25); }
 
   .disc { font-size:11px; color:#999; text-align:center; line-height:1.6; margin-top:12px; }
+  .urgencia { background:var(--dourado-bg); border:1px solid var(--dourado-borda); border-radius:10px; padding:14px 18px; font-size:13px; color:var(--dourado); font-weight:500; text-align:center; margin-bottom:14px; }
   .div { height:1px; background:var(--azul-borda); margin:32px 0; }
 
   .btn-rei { background:none; border:1px solid var(--azul-borda); color:var(--texto2); padding:12px 24px; border-radius:8px; cursor:pointer; font-size:12px; width:100%; transition:all 0.2s; font-family:'Outfit',sans-serif; }
@@ -131,11 +134,12 @@
 
   <div class="intro" id="tela-intro">
     <h1>Você está fazendo<br><span>bom uso</span> do Mounjaro?</h1>
-    <p>Responda 7 perguntas e descubra se o seu protocolo está no caminho certo — ou se algo importante está sendo ignorado.</p>
+    <p class="intro-sub">Descubra em 2 minutos o que está travando o seu resultado — e o que a COB faria diferente no seu caso.</p>
+    <p>Responda 7 perguntas e receba uma avaliação personalizada do seu protocolo atual.</p>
     <div class="stats-strip">
-      <div class="stat-item"><span class="stat-num">340+</span><span class="stat-label">pacientes em protocolo ativo na COB</span></div>
-      <div class="stat-item"><span class="stat-num">78%</span><span class="stat-label">chegaram estagnados de outra clínica</span></div>
-      <div class="stat-item"><span class="stat-num">91%</span><span class="stat-label">voltaram a progredir em até 2 semanas</span></div>
+      <div class="stat-item"><span class="stat-num">340+</span><span class="stat-label">pacientes em protocolo ativo</span><span class="stat-contexto">acompanhados por equipe completa</span></div>
+      <div class="stat-item"><span class="stat-num">78%</span><span class="stat-label">chegaram estagnados de outra clínica</span><span class="stat-contexto">achando que era problema deles</span></div>
+      <div class="stat-item"><span class="stat-num">91%</span><span class="stat-label">voltaram a progredir em até 2 semanas</span><span class="stat-contexto">com o protocolo revisado</span></div>
     </div>
     <div class="escolha-grid">
       <div class="escolha-card" onclick="iniciar('usa')"><div class="ic">💉</div><h3>Já uso o Mounjaro</h3><p>Quero saber se estou fazendo uso correto</p></div>
@@ -145,15 +149,15 @@
 
   <div class="quiz-section" id="quiz-usa">
     <div class="progresso"><div class="prog-topo"><span class="prog-label">Avaliação de protocolo</span><span class="prog-num" id="num-usa">1 de 7</span></div><div class="barra-f"><div class="barra-p" id="bar-usa" style="width:14%"></div></div></div>
-    <div class="interv" id="int-usa"></div>
     <div id="pw-usa" class="perg-wrap"></div>
+    <div class="interv" id="int-usa"></div>
     <button class="btn-prox" id="btn-usa" onclick="proximo('usa')">Próxima pergunta →</button>
   </div>
 
   <div class="quiz-section" id="quiz-quer">
     <div class="progresso"><div class="prog-topo"><span class="prog-label">Avaliação de elegibilidade</span><span class="prog-num" id="num-quer">1 de 7</span></div><div class="barra-f"><div class="barra-p" id="bar-quer" style="width:14%"></div></div></div>
-    <div class="interv" id="int-quer"></div>
     <div id="pw-quer" class="perg-wrap"></div>
+    <div class="interv" id="int-quer"></div>
     <button class="btn-prox" id="btn-quer" onclick="proximo('quer')">Próxima pergunta →</button>
   </div>
 
@@ -311,6 +315,7 @@ function sel(el,p,i){
   if(op.iv){
     ivEl.innerHTML=`<div class="interv-badge">💡 Sabia que na COB...</div><div class="interv-txt">${op.iv.tx}</div>${op.iv.d?`<div class="interv-dado">${op.iv.d}</div>`:''}`;
     ivEl.classList.add('vis');
+    setTimeout(()=>{ document.getElementById('btn-'+tipo).scrollIntoView({behavior:'smooth', block:'center'}); }, 100);
   } else {
     ivEl.classList.remove('vis'); ivEl.innerHTML='';
   }
@@ -333,7 +338,7 @@ function mostrarRes(){
 
 function gerarRes(){
   const max=21, pct=pts/max;
-  let nv,badge,ic,tit,desc,pontos,dnum,dtxt,msg;
+  let nv,badge,ic,tit,desc,pontos,dnum,dtxt,msg,cta;
 
   if(tipo==='usa'){
     if(pct>=0.70){
@@ -347,6 +352,7 @@ function gerarRes(){
         {i:'💡',t:'Uma revisão com equipe completa pode identificar oportunidades que você ainda não percebeu.'}
       ];
       msg='Olá! Fiz o quiz do Mounjaro e meu resultado foi "Protocolo bem estruturado". Gostaria de agendar uma revisão com a equipe da COB.';
+      cta='Agendar revisão do meu protocolo →';
     } else if(pct>=0.40){
       nv='atencao';badge='⚠️ Lacunas identificadas';ic='🔍';
       tit='Seu protocolo tem pontos críticos em aberto';
@@ -358,6 +364,7 @@ function gerarRes(){
         {i:'💡',t:'O protocolo da COB inclui médico, nutricionista, treinador e psicóloga — em um único plano.'}
       ];
       msg='Olá! Fiz o quiz do Mounjaro e identifiquei lacunas no meu protocolo. Gostaria de entender como a COB pode ajudar.';
+      cta='Quero reestruturar meu protocolo →';
     } else {
       nv='risco';badge='🚨 Atenção urgente';ic='🚨';
       tit='Seu uso atual pode estar te prejudicando';
@@ -369,6 +376,7 @@ function gerarRes(){
         {i:'💡',t:'Nossa equipe avalia o que está acontecendo e reestrutura o protocolo com segurança.'}
       ];
       msg='Olá! Fiz o quiz do Mounjaro e meu resultado indicou riscos sérios no protocolo atual. Preciso de ajuda urgente.';
+      cta='Quero corrigir meu protocolo agora →';
     }
   } else {
     if(pct>=0.70){
@@ -382,6 +390,7 @@ function gerarRes(){
         {i:'💡',t:'O próximo passo é uma avaliação médica completa para confirmar a indicação e montar o protocolo certo.'}
       ];
       msg='Olá! Fiz o quiz e meu resultado foi "Perfil favorável" para o Mounjaro. Gostaria de agendar uma avaliação na COB.';
+      cta='Agendar minha avaliação inicial →';
     } else if(pct>=0.40){
       nv='atencao';badge='⚠️ Avaliação necessária';ic='🔍';
       tit='Você pode se beneficiar — mas precisa de avaliação antes';
@@ -393,6 +402,7 @@ function gerarRes(){
         {i:'💡',t:'A avaliação completa vai identificar o que precisa ser ajustado e se o Mounjaro é a melhor opção agora.'}
       ];
       msg='Olá! Fiz o quiz e meu resultado indica que preciso de avaliação antes de começar o Mounjaro. Gostaria de agendar.';
+      cta='Quero entender meu caso com a equipe →';
     } else {
       nv='risco';badge='🚨 Base necessária primeiro';ic='🩺';
       tit='Antes do Mounjaro, você precisa de uma avaliação completa';
@@ -404,6 +414,7 @@ function gerarRes(){
         {i:'💡',t:'Nossa equipe investiga as causas reais e monta o protocolo certo — com ou sem Mounjaro.'}
       ];
       msg='Olá! Fiz o quiz do Mounjaro e identificaram fatores que precisam ser investigados. Gostaria de agendar uma avaliação na COB.';
+      cta='Quero uma avaliação completa antes de começar →';
     }
   }
 
@@ -417,8 +428,9 @@ function gerarRes(){
       <div class="dado-prova"><div class="dado-num">${dnum}</div><div class="dado-txt">${dtxt}</div></div>
       <div class="res-pontos">${pontos.map(p=>`<div class="ponto"><span class="ponto-ic">${p.i}</span><span class="ponto-txt">${p.t}</span></div>`).join('')}</div>
     </div>
-    <a href="${wpp}" target="_blank" class="btn-wpp">💬 Falar com a equipe da COB</a>
-    <p class="disc">Este quiz é informativo e não substitui avaliação médica. Os resultados servem como orientação para uma consulta profissional.</p>
+    <div class="urgencia">📅 As avaliações iniciais têm agenda limitada — atendemos um número restrito de novos pacientes por mês.</div>
+    <a href="${wpp}" target="_blank" class="btn-wpp">💬 ${cta}</a>
+    <p class="disc">Este quiz é informativo e não substitui avaliação médica. Os resultados servem como orientação para uma consulta profissional com a equipe da COB.</p>
     <div class="div"></div>
     <button class="btn-rei" onclick="reiniciar()">← Refazer o quiz</button>`;
 }
