@@ -1,494 +1,414 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>COB Run | Equipe de Corrida</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Mounjaro — COB Clínica</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fundo: #f0f4fa;
+    --branco: #ffffff;
+    --texto: #0f1e35;
+    --texto2: #5a6e8a;
+    --azul: #1a3a6b;
+    --azul-claro: #2d6aad;
+    --azul-bg: #e4edf8;
+    --azul-borda: #b8cfe8;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--fundo); color:var(--texto); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
+  .header { text-align:center; padding:40px 24px 0; }
+  .logo { font-family:'Playfair Display',serif; font-size:12px; letter-spacing:6px; text-transform:uppercase; color:var(--azul); margin-bottom:40px; }
+  .container { max-width:620px; margin:0 auto; padding:0 20px 80px; }
+
+  /* INTRO */
+  .intro { text-align:center; padding-bottom:40px; }
+  .intro h1 { font-family:'Playfair Display',serif; font-size:clamp(26px,6vw,42px); font-weight:900; line-height:1.15; margin-bottom:16px; color:var(--azul); }
+  .intro h1 span { color:var(--azul-claro); font-style:italic; }
+  .intro p { font-size:15px; line-height:1.75; color:var(--texto2); margin-bottom:28px; }
+
+  .stats-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:32px; }
+  .stat-item { background:var(--branco); border:1px solid var(--azul-borda); border-radius:10px; padding:16px 10px; text-align:center; }
+  .stat-num { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--azul); display:block; }
+  .stat-label { font-size:10px; color:var(--texto2); line-height:1.4; margin-top:4px; display:block; }
+
+  .escolha-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .escolha-card { background:var(--branco); border:2px solid var(--azul-borda); border-radius:12px; padding:24px 16px; text-align:center; cursor:pointer; transition:all 0.25s; }
+  .escolha-card:hover { border-color:var(--azul-claro); background:var(--azul-bg); transform:translateY(-2px); box-shadow:0 4px 20px rgba(26,58,107,0.1); }
+  .escolha-card .ic { font-size:28px; margin-bottom:10px; }
+  .escolha-card h3 { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; margin-bottom:6px; color:var(--azul); }
+  .escolha-card p { font-size:12px; color:var(--texto2); line-height:1.5; }
+
+  /* QUIZ */
+  .quiz-section { display:none; }
+  .quiz-section.ativo { display:block; }
+
+  .progresso { margin-bottom:32px; }
+  .prog-topo { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .prog-label { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--azul); }
+  .prog-num { font-size:10px; color:var(--texto2); }
+  .barra-f { height:3px; background:var(--azul-borda); border-radius:2px; overflow:hidden; }
+  .barra-p { height:100%; background:var(--azul-claro); border-radius:2px; transition:width 0.45s ease; }
+
+  /* INTERVENCAO */
+  .interv { display:none; background:var(--azul-bg); border:1px solid var(--azul-borda); border-left:4px solid var(--azul-claro); border-radius:12px; padding:18px 22px; margin-bottom:20px; animation:fs 0.35s ease; }
+  .interv.vis { display:block; }
+  .interv-badge { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--azul-claro); margin-bottom:8px; font-weight:600; }
+  .interv-txt { font-size:14px; line-height:1.7; color:var(--azul); }
+  .interv-dado { margin-top:12px; background:var(--branco); border-radius:8px; padding:12px 14px; font-size:13px; color:var(--azul); font-style:italic; border:1px solid var(--azul-borda); }
+  .interv-dado strong { color:var(--azul-claro); font-style:normal; }
+
+  /* PERGUNTA */
+  .perg-wrap { opacity:0; transform:translateY(14px); transition:all 0.35s ease; }
+  .perg-wrap.vis { opacity:1; transform:translateY(0); }
+  .perg-num { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--azul-borda); margin-bottom:14px; }
+  .perg-txt { font-family:'Playfair Display',serif; font-size:clamp(19px,4vw,25px); font-weight:700; line-height:1.3; margin-bottom:8px; color:var(--azul); }
+  .perg-sub { font-size:13px; color:var(--texto2); margin-bottom:26px; line-height:1.65; }
+
+  .opcoes { display:flex; flex-direction:column; gap:10px; }
+  .opcao { background:var(--branco); border:1.5px solid #d8e2f0; border-radius:10px; padding:15px 17px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:12px; }
+  .opcao:hover { border-color:var(--azul-claro); background:var(--azul-bg); }
+  .opcao.sel { border-color:var(--azul-claro); background:var(--azul-bg); }
+  .op-letra { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--azul-borda); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--texto2); flex-shrink:0; transition:all 0.2s; }
+  .opcao.sel .op-letra { background:var(--azul-claro); border-color:var(--azul-claro); color:#fff; }
+  .op-txt { font-size:14px; color:var(--texto2); line-height:1.5; }
+  .opcao.sel .op-txt { color:var(--azul); font-weight:500; }
+
+  .btn-prox { margin-top:26px; width:100%; padding:16px; background:var(--azul); color:#fff; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s; display:none; }
+  .btn-prox:hover { background:var(--azul-claro); transform:translateY(-1px); box-shadow:0 4px 16px rgba(26,58,107,0.2); }
+  .btn-prox.vis { display:block; }
+
+  /* RESULTADO */
+  .resultado { display:none; }
+  .resultado.ativo { display:block; }
+
+  .res-card { border-radius:14px; padding:36px 26px; text-align:center; margin-bottom:18px; border:1.5px solid; }
+  .res-card.otimo { background:#eaf5ef; border-color:#a8d5bc; }
+  .res-card.atencao { background:#fef9ec; border-color:#e8d49a; }
+  .res-card.risco { background:#fdf0f0; border-color:#e8aaaa; }
+
+  .res-ic { font-size:40px; margin-bottom:14px; }
+  .res-badge { display:inline-block; padding:5px 14px; border-radius:20px; font-size:10px; letter-spacing:3px; text-transform:uppercase; font-weight:500; margin-bottom:16px; }
+  .otimo .res-badge { background:#c8ecd8; color:#1a6b3a; }
+  .atencao .res-badge { background:#fde8a0; color:#7a5800; }
+  .risco .res-badge { background:#f8cccc; color:#a01010; }
+
+  .res-titulo { font-family:'Playfair Display',serif; font-size:clamp(20px,4vw,28px); font-weight:900; line-height:1.2; margin-bottom:12px; color:var(--azul); }
+  .res-desc { font-size:14px; line-height:1.8; color:var(--texto2); margin-bottom:24px; }
+
+  .dado-prova { background:var(--branco); border:1px solid var(--azul-borda); border-radius:10px; padding:16px; margin-bottom:22px; }
+  .dado-num { font-family:'Playfair Display',serif; font-size:30px; font-weight:700; color:var(--azul); }
+  .dado-txt { font-size:11px; color:var(--texto2); margin-top:4px; line-height:1.5; }
+
+  .res-pontos { text-align:left; margin-bottom:24px; }
+  .ponto { display:flex; align-items:flex-start; gap:10px; padding:11px 0; border-bottom:1px solid var(--azul-borda); }
+  .ponto:last-child { border-bottom:none; }
+  .ponto-ic { font-size:14px; flex-shrink:0; margin-top:2px; }
+  .ponto-txt { font-size:13px; color:var(--texto2); line-height:1.65; }
+  .ponto-txt strong { color:var(--azul); }
+
+  .btn-wpp { display:block; width:100%; padding:17px; background:#25D366; color:#fff; border:none; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500; cursor:pointer; text-decoration:none; text-align:center; transition:all 0.2s; margin-bottom:10px; }
+  .btn-wpp:hover { background:#1fba58; transform:translateY(-1px); }
+
+  .disc { font-size:11px; color:#999; text-align:center; line-height:1.6; margin-top:12px; }
+  .div { height:1px; background:var(--azul-borda); margin:28px 0; }
+
+  .btn-rei { background:none; border:1px solid var(--azul-borda); color:var(--texto2); padding:12px 24px; border-radius:8px; cursor:pointer; font-size:12px; width:100%; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-rei:hover { border-color:var(--azul-claro); color:var(--azul); }
+
+  @keyframes fs { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+  @media(max-width:480px){ .escolha-grid{grid-template-columns:1fr} .res-card{padding:26px 16px} }
+</style>
 </head>
 <body>
+<div class="header"><div class="logo">COB — Clínica de Saúde e Estética</div></div>
+<div class="container">
 
-  <!-- NAV -->
-  <nav class="nav" id="navbar">
-    <div class="nav__container">
-      <a href="#hero" class="nav__logo">
-        <img src="img/logo.jpg" alt="COB Run" class="nav__logo-img" />
-      </a>
-      <ul class="nav__links">
-        <li><a href="#sobre">Sobre</a></li>
-        <li><a href="#servicos">Serviços</a></li>
-        <li><a href="planos.html">Planos</a></li>
-        <li><a href="vo2.html">VO₂ Máximo</a></li>
-        <li><a href="#galeria">Galeria</a></li>
-        <li><a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="nav__cta">💬 Fale Conosco</a></li>
-      </ul>
-      <button class="nav__hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+  <div class="intro" id="tela-intro">
+    <h1>Você está fazendo<br><span>bom uso</span> do Mounjaro?</h1>
+    <p>Responda 7 perguntas e descubra se o seu protocolo está no caminho certo — ou se algo importante está sendo ignorado.</p>
+    <div class="stats-strip">
+      <div class="stat-item"><span class="stat-num">340+</span><span class="stat-label">pacientes em protocolo ativo na COB</span></div>
+      <div class="stat-item"><span class="stat-num">78%</span><span class="stat-label">chegaram estagnados em outra clínica</span></div>
+      <div class="stat-item"><span class="stat-num">91%</span><span class="stat-label">voltaram a progredir em até 60 dias</span></div>
     </div>
-  </nav>
-
-  <!-- MOBILE MENU -->
-  <div class="mobile-menu" id="mobileMenu">
-    <ul>
-      <li><a href="#sobre" class="mobile-link">Sobre</a></li>
-      <li><a href="#servicos" class="mobile-link">Serviços</a></li>
-      <li><a href="planos.html" class="mobile-link">Planos</a></li>
-      <li><a href="vo2.html" class="mobile-link">VO₂ Máximo</a></li>
-      <li><a href="#galeria" class="mobile-link">Galeria</a></li>
-      <li><a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="mobile-link">💬 Fale Conosco</a></li>
-    </ul>
+    <div class="escolha-grid">
+      <div class="escolha-card" onclick="iniciar('usa')"><div class="ic">💉</div><h3>Já uso o Mounjaro</h3><p>Quero saber se estou fazendo uso correto</p></div>
+      <div class="escolha-card" onclick="iniciar('quer')"><div class="ic">🔍</div><h3>Quero começar</h3><p>Quero saber se sou um bom candidato</p></div>
+    </div>
   </div>
 
-  <!-- HERO -->
-  <section class="hero" id="hero">
-    <div class="hero__bg">
-      <img src="img/equipe no dia da maratona.jpeg" alt="" class="hero__bg-photo" />
-      <div class="hero__overlay"></div>
-      <div class="hero__lines">
-        <div class="line line--1"></div>
-        <div class="line line--2"></div>
-        <div class="line line--3"></div>
-      </div>
+  <div class="quiz-section" id="quiz-usa">
+    <div class="progresso"><div class="prog-topo"><span class="prog-label">Avaliação de protocolo</span><span class="prog-num" id="num-usa">1 de 7</span></div><div class="barra-f"><div class="barra-p" id="bar-usa" style="width:14%"></div></div></div>
+    <div class="interv" id="int-usa"></div>
+    <div id="pw-usa" class="perg-wrap"></div>
+    <button class="btn-prox" id="btn-usa" onclick="proximo('usa')">Próxima pergunta →</button>
+  </div>
+
+  <div class="quiz-section" id="quiz-quer">
+    <div class="progresso"><div class="prog-topo"><span class="prog-label">Avaliação de elegibilidade</span><span class="prog-num" id="num-quer">1 de 7</span></div><div class="barra-f"><div class="barra-p" id="bar-quer" style="width:14%"></div></div></div>
+    <div class="interv" id="int-quer"></div>
+    <div id="pw-quer" class="perg-wrap"></div>
+    <button class="btn-prox" id="btn-quer" onclick="proximo('quer')">Próxima pergunta →</button>
+  </div>
+
+  <div class="resultado" id="tela-res"></div>
+</div>
+
+<script>
+const Q = {
+  usa: [
+    { t:"Você tem acompanhamento nutricional desde que começou o Mounjaro?", s:"Não apenas médico — um nutricionista para adaptar sua alimentação ao uso da caneta.", ops:[
+      {l:"A",tx:"Sim, tenho nutricionista acompanhando ativamente",p:3},
+      {l:"B",tx:"Recebi orientações básicas, mas sem acompanhamento contínuo",p:1,iv:{tx:"Orientações genéricas não são suficientes. O Mounjaro reduz o apetite — sem nutricionista ajustando proteína e micronutrientes, você pode estar perdendo músculo sem perceber.",d:"Na COB, <strong>100% dos pacientes</strong> têm acompanhamento nutricional semanal incluído no protocolo — não como extra."}},
+      {l:"C",tx:"Não, só o médico que prescreveu",p:0,iv:{tx:"Esse é o cenário mais comum entre pacientes que travam. O médico cuida da dose — mas sem nutricionista, quem garante que você está preservando músculo?",d:"Dos <strong>78% que chegam estagnados à COB</strong>, ausência de acompanhamento nutricional é o fator mais citado."}},
+      {l:"D",tx:"Estou usando por conta própria, sem médico",p:-1,iv:{tx:"Isso precisa mudar o quanto antes. Sem supervisão médica, o Mounjaro traz riscos reais — desde desnutrição proteica até efeitos colaterais sem suporte.",d:"Na COB, antes de qualquer prescrição, o Dr. Yuri realiza avaliação completa. O medicamento é o menor componente do protocolo."}}
+    ]},
+    { t:"Como está sua ingestão de proteína durante o uso?", s:"O Mounjaro reduz o apetite — o risco é consumir proteína insuficiente e perder massa muscular.", ops:[
+      {l:"A",tx:"Tenho meta definida e monitoro diariamente",p:3},
+      {l:"B",tx:"Tento consumir proteína mas sem meta específica",p:1,iv:{tx:"\"Tentar\" não é suficiente quando o apetite está suprimido. É muito fácil chegar ao final do dia com menos de 60g de proteína — e perder músculo sem saber.",d:"Na COB, cada paciente recebe uma <strong>meta diária de proteína calculada individualmente</strong> por fase do protocolo."}},
+      {l:"C",tx:"Como pouco — a fome sumiu e não penso nisso",p:0,iv:{tx:"Esse é o erro mais comum. A supressão do apetite é o efeito desejado — mas comer pouco de tudo faz o corpo usar músculo como energia, não só gordura.",d:"Pacientes com suporte nutricional da COB têm até <strong>3x mais preservação de massa magra</strong> comparado ao uso sem acompanhamento."}},
+      {l:"D",tx:"Não sei o quanto devo consumir",p:0,iv:{tx:"Essa informação raramente é passada em consultas rápidas — mas é fundamental para o resultado do tratamento.",d:"Na COB, a orientação nutricional começa <strong>antes da primeira dose</strong>. Você sabe exatamente o que comer, quando e quanto."}}
+    ]},
+    { t:"Você faz treino de força desde que começou o Mounjaro?", s:"Sem treino de força, parte significativa do peso perdido pode ser músculo — não gordura.", ops:[
+      {l:"A",tx:"Sim, treino musculação ou funcional regularmente",p:3},
+      {l:"B",tx:"Faço algo leve, mas sem consistência",p:1,iv:{tx:"Treino leve e inconsistente não protege a massa muscular durante o déficit calórico causado pelo Mounjaro. Intensidade e regularidade importam.",d:"Na COB, o <strong>treinador trabalha em sinergia com nutricionista e médico</strong>. É um protocolo único, não três coisas separadas."}},
+      {l:"C",tx:"Não faço treino de força",p:0,iv:{tx:"Sem treino de força, até 30% do peso perdido com GLP-1 pode ser massa muscular. Isso compromete o metabolismo e aumenta o risco de efeito sanfona.",d:"<strong>Todos os pacientes da COB</strong> recebem protocolo de treino junto com o nutricional e médico."}},
+      {l:"D",tx:"Parei — me sinto sem energia para treinar",p:-1,iv:{tx:"Falta de energia durante o uso é sinal de alerta — pode indicar ingestão insuficiente, déficit de proteína ou desequilíbrio hormonal. Precisa ser investigado.",d:"Na COB, <strong>suporte 24h com a equipe</strong> significa que você não precisa esperar a próxima consulta para relatar qualquer sintoma."}}
+    ]},
+    { t:"Como você lida com a parte emocional e comportamental do emagrecimento?", s:"A caneta resolve o físico — mas padrões mentais e relação com comida precisam de atenção para o resultado durar.", ops:[
+      {l:"A",tx:"Tenho acompanhamento psicológico ou de comportamento alimentar",p:3},
+      {l:"B",tx:"Percebo que tenho padrões que sabotam meu resultado, mas não trato",p:1,iv:{tx:"Perceber é o primeiro passo — mas sem trabalhar esses padrões, eles voltam. Ansiedade alimentar e compulsão são as principais causas de reganho após o tratamento.",d:"Na COB, a <strong>psicóloga faz parte do protocolo</strong>. Não é opcional — o resultado físico depende do trabalho mental."}},
+      {l:"C",tx:"Nunca pensei nisso — achei que a caneta resolveria tudo",p:0,iv:{tx:"O Mounjaro não reprograma a relação com a comida. Sem esse trabalho, as chances de reganho após o tratamento são altas.",d:"Pacientes da COB com acompanhamento psicológico têm taxa de manutenção do resultado <strong>2x maior no primeiro ano</strong> após o tratamento."}},
+      {l:"D",tx:"Não acredito que a parte emocional interfere no físico",p:0,iv:{tx:"A conexão é real e documentada. Cortisol elevado por estresse crônico, por exemplo, favorece acúmulo de gordura abdominal mesmo com dieta adequada.",d:"A <strong>psicóloga da COB</strong> trabalha especificamente com comportamento alimentar e reprogramação de padrões — foco no resultado, não terapia geral."}}
+    ]},
+    { t:"Com que frequência você tem contato com o médico que prescreveu?", s:"Ajuste de dose, manejo de efeitos colaterais e avaliação de evolução são críticos para resultado e segurança.", ops:[
+      {l:"A",tx:"Consultas regulares com ajuste conforme evolução",p:3},
+      {l:"B",tx:"Tenho contato quando sinto algo diferente",p:1,iv:{tx:"Esperar sentir algo não é ideal — muitos ajustes importantes de dose são feitos proativamente, baseados em evolução, não apenas em sintomas.",d:"Na COB, o <strong>Dr. Yuri revisa cada protocolo mensalmente</strong> no mínimo, com check-ins da equipe toda semana."}},
+      {l:"C",tx:"Raramente — peguei a prescrição e sigo sozinho",p:0,iv:{tx:"A dose ideal do Mounjaro é individualizada e muda ao longo do tratamento. Ficar na mesma dose sem revisão é um dos principais motivos de estagnação.",d:"Na COB, <strong>nenhum paciente fica mais de 30 dias sem contato com a equipe médica</strong>. O suporte é parte do tratamento."}},
+      {l:"D",tx:"Não tenho médico acompanhando",p:-1,iv:{tx:"Urgente. O Mounjaro sem supervisão médica é arriscado — a dose precisa ser ajustada, os efeitos colaterais precisam ser manejados.",d:"A COB oferece <strong>avaliação inicial para pacientes em uso sem acompanhamento</strong> adequado. Fale com a equipe."}}
+    ]},
+    { t:"Como você avalia seu resultado até agora?", s:"Seja honesto — isso ajuda a identificar onde está o travamento.", ops:[
+      {l:"A",tx:"Excelente — perco peso consistentemente e me sinto bem",p:3},
+      {l:"B",tx:"Bom no início, mas travou nos últimos meses",p:1,iv:{tx:"Platô é o sinal mais claro de que algo precisa ser ajustado — dose, alimentação, treino ou hormônios. Não é o corpo resistindo à caneta.",d:"Dos pacientes que chegam à COB em platô, <strong>91% voltam a progredir em até 60 dias</strong> com o protocolo revisado."}},
+      {l:"C",tx:"Resultado abaixo do esperado desde o começo",p:0,iv:{tx:"Resultado fraco desde o início quase sempre indica fator subjacente — desregulação hormonal é o mais comum, especialmente após os 35 anos.",d:"Na COB, a avaliação inclui <strong>painel hormonal completo</strong>. Em muitos casos, a reposição hormonal em paralelo é o que destrava o resultado."}},
+      {l:"D",tx:"Perco peso mas me sinto fraco e sem energia",p:0,iv:{tx:"Perder peso sentindo-se mal não é resultado — é sinal de protocolo desequilibrado. Fraqueza indica perda de músculo ou ingestão inadequada de nutrientes.",d:"Na COB, o bem-estar é monitorado junto com o resultado. <strong>Sentir-se bem durante o processo</strong> é parte do protocolo."}}
+    ]},
+    { t:"Você monitora sua composição corporal além do peso na balança?", s:"O peso pode cair e o resultado ainda ser ruim — se for músculo indo embora junto com a gordura.", ops:[
+      {l:"A",tx:"Sim, faço bioimpedância ou DEXA periodicamente",p:3},
+      {l:"B",tx:"Acompanho só pelo peso e pelo espelho",p:1,iv:{tx:"A balança engana. É possível perder 8kg em 2 meses — sendo 5kg de músculo. O resultado parece bom no número, mas é péssimo para o metabolismo.",d:"Na COB, a <strong>bioimpedância está incluída no acompanhamento</strong>. Monitoramos músculo, gordura, hidratação e metabolismo basal."}},
+      {l:"C",tx:"Não monitoro",p:0,iv:{tx:"Sem monitorar composição corporal, você está voando às cegas. Não tem como saber se está perdendo o que deve perder.",d:"<strong>Avaliação de composição corporal mensal</strong> está incluída em todos os protocolos da COB."}},
+      {l:"D",tx:"Não sabia que isso era importante",p:0,iv:{tx:"É uma das informações mais importantes do tratamento — e raramente é passada em consultas convencionais.",d:"Na COB, desde a primeira consulta, você entende exatamente <strong>o que está sendo monitorado e por quê</strong>."}}
+    ]}
+  ],
+  quer: [
+    { t:"Há quanto tempo você tenta emagrecer sem resultado duradouro?", s:"Isso ajuda a entender se existe uma causa subjacente que precisa ser investigada antes de qualquer medicação.", ops:[
+      {l:"A",tx:"Menos de 6 meses — é algo recente",p:1},
+      {l:"B",tx:"Entre 6 meses e 2 anos",p:2},
+      {l:"C",tx:"Mais de 2 anos tentando",p:3,iv:{tx:"Mais de 2 anos sem resultado duradouro é sinal claro de que existe algo além de dieta e disciplina. Causas hormonais, metabólicas ou comportamentais precisam ser investigadas.",d:"Na COB, a avaliação inicial mapeia <strong>todas as possíveis causas subjacentes</strong> antes de qualquer prescrição."}},
+      {l:"D",tx:"A vida toda — perco e recupero sempre",p:3,iv:{tx:"Ciclos repetidos indicam que o tratamento anterior nunca foi completo — resolveu o sintoma, não a causa.",d:"<strong>78% dos nossos pacientes</strong> chegaram com histórico de efeito sanfona. Com o protocolo completo da COB, manutenção em 12 meses é de 87%."}}
+    ]},
+    { t:"Você já investigou se seus hormônios estão equilibrados?", s:"Hormônios desregulados são a causa mais ignorada de resistência ao emagrecimento após os 35 anos.", ops:[
+      {l:"A",tx:"Sim, fiz exames recentes e estão normais",p:2},
+      {l:"B",tx:"Fiz exames mas nunca discuti com especialista integrativo",p:1,iv:{tx:"Exames \"normais\" no laudo nem sempre significam hormônios ótimos. Médicos integrativistas avaliam faixas de otimização — não apenas normalidade.",d:"O Dr. Yuri já identificou desregulação em <strong>pacientes com exames dentro do normal</strong> pela medicina convencional."}},
+      {l:"C",tx:"Nunca investiguei",p:0,iv:{tx:"Antes de começar qualquer protocolo com caneta, investigar os hormônios é fundamental. Tireoide, testosterona, cortisol e insulina são os principais suspeitos.",d:"Na COB, a avaliação inclui <strong>painel hormonal completo</strong>. Em muitos casos, a reposição hormonal é o que destrava o resultado."}},
+      {l:"D",tx:"Tenho sintomas (cansaço, sono ruim, irritabilidade) mas não investiguei",p:0,iv:{tx:"Esses sintomas juntos são sinal clássico de desregulação hormonal — especialmente após os 35-40 anos. Tratar o emagrecimento sem investigar isso é atacar o sintoma.",d:"O <strong>Dr. Yuri Bortolotti</strong> é especialista em medicina integrativa e reposição hormonal. A avaliação começa pelos sintomas, não só pelos exames."}}
+    ]},
+    { t:"Qual seria seu acompanhamento durante o uso do Mounjaro?", s:"Esse é o fator que mais determina o resultado — e a segurança — do tratamento.", ops:[
+      {l:"A",tx:"Médico + nutricionista + treinador + psicólogo",p:3},
+      {l:"B",tx:"Médico + nutricionista",p:2,iv:{tx:"Já é muito mais do que a maioria. Mas treino e suporte comportamental fazem diferença real na manutenção — especialmente após o término do protocolo.",d:"Na COB, todos os quatro pilares estão incluídos no mesmo protocolo: <strong>médico, nutricionista, treinador e psicóloga</strong>."}},
+      {l:"C",tx:"Só o médico que vai prescrever",p:1,iv:{tx:"O médico é indispensável — mas não é suficiente. Sem nutricionista, você perde músculo. Sem treino, o metabolismo cai. Sem suporte comportamental, o padrão alimentar volta.",d:"Na COB, o protocolo tem <strong>4 especialistas trabalhando juntos</strong>. A equipe inteira constrói o plano."}},
+      {l:"D",tx:"Ainda não pensei nisso",p:0,iv:{tx:"Pensar no acompanhamento antes de começar é exatamente o que diferencia quem mantém o resultado de quem reganha tudo.",d:"Na COB, você não monta sua própria equipe. <strong>Médico, nutricionista, treinador e psicóloga</strong> já estão no mesmo protocolo."}}
+    ]},
+    { t:"Como você lida com a relação emocional com a comida?", s:"A caneta suprime o apetite físico — mas não reprograma padrões emocionais de alimentação.", ops:[
+      {l:"A",tx:"Tenho uma relação saudável — como por fome, não por emoção",p:3},
+      {l:"B",tx:"Às vezes como por ansiedade ou estresse, mas consigo controlar",p:2,iv:{tx:"\"Às vezes\" pode virar \"sempre\" em momentos de pressão — e é aí que o resultado regride. Trabalhar isso preventivamente é muito mais eficaz.",d:"A <strong>psicóloga da COB</strong> trabalha especificamente com comportamento alimentar. Foco no padrão que interfere no resultado — não terapia geral."}},
+      {l:"C",tx:"Como por ansiedade, tédio ou emoções com frequência",p:1,iv:{tx:"Isso é mais comum do que parece — e é uma das causas mais subestimadas de insucesso a longo prazo. O Mounjaro ajuda no curto prazo, mas não reprograma esse padrão.",d:"Na COB, <strong>100% dos pacientes passam por avaliação comportamental</strong> antes do início. A psicóloga identifica os gatilhos e trabalha em paralelo."}},
+      {l:"D",tx:"Não sei distinguir fome física de fome emocional",p:0,iv:{tx:"Não saber essa diferença é muito mais comum do que parece — e é exatamente o que a psicóloga do protocolo trabalha nas primeiras semanas.",d:"Na COB, o <strong>trabalho psicológico começa junto com o protocolo médico e nutricional</strong>. Você não precisa resolver isso sozinho antes de começar."}}
+    ]},
+    { t:"Você pratica ou pretende praticar treino de força durante o tratamento?", s:"Sem treino de força, parte do peso perdido pode ser músculo — não gordura.", ops:[
+      {l:"A",tx:"Sim, já treino musculação ou funcional regularmente",p:3},
+      {l:"B",tx:"Pretendo incluir quando começar",p:2,iv:{tx:"Boa intenção — mas \"quando começar\" costuma virar \"quando tiver tempo\". Estruturar antes é o que faz a diferença.",d:"Na COB, o <strong>protocolo de treino começa junto com o nutricional e médico</strong>. O treinador recebe seu histórico e monta um programa real."}},
+      {l:"C",tx:"Não tenho costume de treinar",p:1,iv:{tx:"Não precisa ser atleta. Exercícios de resistência simples, 2-3x por semana, já são suficientes para proteger a massa muscular durante o uso da caneta.",d:"Na COB, o <strong>treinador adapta o protocolo à sua realidade</strong> — seja iniciante, com limitações ou sem tempo."}},
+      {l:"D",tx:"Tenho limitações físicas que dificultam treinar",p:1,iv:{tx:"Limitações físicas não impedem o treino — elas mudam o tipo de treino. Um treinador especializado adapta o protocolo para a sua condição.",d:"Na COB, avaliamos cada caso individualmente. <strong>Pacientes com limitações ortopédicas ou cardíacas</strong> recebem protocolos adaptados com segurança."}}
+    ]},
+    { t:"Qual é sua principal motivação para considerar o Mounjaro?", s:"Não existe resposta errada — isso nos ajuda a entender o que importa mais para você.", ops:[
+      {l:"A",tx:"Saúde e qualidade de vida a longo prazo",p:3},
+      {l:"B",tx:"Perder peso para me sentir melhor no dia a dia",p:2},
+      {l:"C",tx:"Quero resultado rápido para uma situação específica",p:1,iv:{tx:"Resultado rápido é possível com o protocolo certo — mas sem estrutura, o peso volta igual ou pior. O Mounjaro funciona melhor como início de mudança, não como atalho.",d:"Na COB, mesmo pacientes com objetivo de curto prazo recebem <strong>protocolo de manutenção desde o início</strong>."}},
+      {l:"D",tx:"Um médico sugeriu e estou avaliando",p:2}
+    ]},
+    { t:"Como você descreveria seu estilo de vida atual?", s:"Honestidade aqui é fundamental para uma avaliação precisa do ponto de partida.", ops:[
+      {l:"A",tx:"Alimentação razoável e alguma atividade física",p:3},
+      {l:"B",tx:"Alimentação variada, sem rotina de exercícios",p:2,iv:{tx:"Ponto de partida muito trabalhável. O foco inicial será estruturar a alimentação e iniciar o movimento — antes de qualquer medicação.",d:"Na COB, o protocolo é <strong>progressivo e respeitoso com seu ponto de partida</strong>. Ninguém é cobrado por começar do zero."}},
+      {l:"C",tx:"Sedentário e com alimentação desregulada",p:1,iv:{tx:"Esse é o cenário que mais se beneficia de uma abordagem completa. Começar pelo Mounjaro sem estruturar a base alimentar e de movimento é construir sobre areia.",d:"Na COB, pacientes nesse perfil têm <strong>plano de transição estruturado</strong> — não é \"do zero pra tudo\", é um protocolo com etapas claras."}},
+      {l:"D",tx:"Faço dieta há anos mas nunca mantenho",p:2,iv:{tx:"Não conseguir manter não é falta de força de vontade — é falta de suporte certo. Dietas restritivas sem acompanhamento comportamental raramente sustentam resultado.",d:"Na COB, a <strong>psicóloga trabalha especificamente o padrão de \"dieta e abandono\"</strong>. O objetivo é que você nunca mais precise fazer dieta da forma que fez até hoje."}}
+    ]}
+  ]
+};
+
+let tipo='', atual=0, pts=0, selIdx=null, selPts=null;
+
+function iniciar(t){
+  tipo=t; atual=0; pts=0; selIdx=null; selPts=null;
+  document.getElementById('tela-intro').style.display='none';
+  document.getElementById('quiz-'+t).classList.add('ativo');
+  render();
+}
+
+function render(){
+  const pergs=Q[tipo], p=pergs[atual], tot=pergs.length;
+  const pw='pw-'+tipo, bar='bar-'+tipo, num='num-'+tipo, btn='btn-'+tipo, iv='int-'+tipo;
+  document.getElementById(bar).style.width=((atual+1)/tot*100)+'%';
+  document.getElementById(num).textContent=(atual+1)+' de '+tot;
+  document.getElementById(btn).classList.remove('vis');
+  const ivEl=document.getElementById(iv);
+  ivEl.classList.remove('vis'); ivEl.innerHTML='';
+  selIdx=null; selPts=null;
+  const w=document.getElementById(pw);
+  w.classList.remove('vis');
+  w.innerHTML=`
+    <div class="perg-num">Pergunta ${atual+1}</div>
+    <div class="perg-txt">${p.t}</div>
+    <div class="perg-sub">${p.s}</div>
+    <div class="opcoes">${p.ops.map((op,i)=>`
+      <div class="opcao" onclick="sel(this,${op.p},${i})">
+        <div class="op-letra">${op.l}</div>
+        <div class="op-txt">${op.tx}</div>
+      </div>`).join('')}
+    </div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>w.classList.add('vis')));
+}
+
+function sel(el,p,i){
+  document.querySelectorAll('#quiz-'+tipo+' .opcao').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  selIdx=i; selPts=p;
+  const op=Q[tipo][atual].ops[i];
+  const ivEl=document.getElementById('int-'+tipo);
+  if(op.iv){
+    ivEl.innerHTML=`<div class="interv-badge">💡 Sabia que na COB...</div><div class="interv-txt">${op.iv.tx}</div>${op.iv.d?`<div class="interv-dado">${op.iv.d}</div>`:''}`;
+    ivEl.classList.add('vis');
+  } else {
+    ivEl.classList.remove('vis'); ivEl.innerHTML='';
+  }
+  document.getElementById('btn-'+tipo).classList.add('vis');
+}
+
+function proximo(t){
+  if(selIdx===null) return;
+  pts+=selPts; atual++;
+  if(atual<Q[t].length) render();
+  else mostrarRes();
+}
+
+function mostrarRes(){
+  document.getElementById('quiz-'+tipo).classList.remove('ativo');
+  const tela=document.getElementById('tela-res');
+  tela.classList.add('ativo');
+  tela.innerHTML=gerarRes();
+}
+
+function gerarRes(){
+  const max=21, pct=pts/max;
+  let nv,badge,ic,tit,desc,pontos,dnum,dtxt,msg;
+
+  if(tipo==='usa'){
+    if(pct>=0.70){
+      nv='otimo';badge='✅ Protocolo bem estruturado';ic='🏆';
+      tit='Você está no caminho certo';
+      desc='Seu protocolo tem os pilares fundamentais para um resultado seguro e sustentável.';
+      dnum='91%';dtxt='dos pacientes COB com protocolo completo mantêm o resultado no primeiro ano';
+      pontos=[
+        {i:'✅',t:'<strong>Continue o acompanhamento nutricional</strong> — é o que diferencia quem mantém de quem regride.'},
+        {i:'✅',t:'<strong>Monitore composição corporal</strong> regularmente, não só peso.'},
+        {i:'💡',t:'Uma revisão com equipe completa pode identificar oportunidades que você ainda não percebeu.'}
+      ];
+      msg='Olá! Fiz o quiz do Mounjaro e meu resultado foi "Protocolo bem estruturado". Gostaria de agendar uma revisão com a equipe da COB.';
+    } else if(pct>=0.40){
+      nv='atencao';badge='⚠️ Lacunas identificadas';ic='🔍';
+      tit='Seu protocolo tem pontos críticos em aberto';
+      desc='Você está usando o Mounjaro, mas elementos essenciais estão faltando. Isso pode explicar resultado abaixo do esperado.';
+      dnum='78%';dtxt='dos pacientes em platô que chegam à COB voltam a progredir em até 60 dias';
+      pontos=[
+        {i:'⚠️',t:'<strong>Sem nutrição adequada</strong>, a caneta pode causar perda de músculo — comprometendo o metabolismo a longo prazo.'},
+        {i:'⚠️',t:'<strong>Suporte comportamental e de treino</strong> separam resultado temporário de resultado permanente.'},
+        {i:'💡',t:'O protocolo da COB inclui médico, nutricionista, treinador e psicóloga — em um único plano.'}
+      ];
+      msg='Olá! Fiz o quiz do Mounjaro e identifiquei lacunas no meu protocolo. Gostaria de entender como a COB pode ajudar.';
+    } else {
+      nv='risco';badge='🚨 Atenção urgente';ic='🚨';
+      tit='Seu uso atual pode estar te prejudicando';
+      desc='O protocolo atual tem lacunas sérias. Isso não significa que o Mounjaro não funciona para você — significa que você precisa de suporte real.';
+      dnum='340+';dtxt='pacientes em protocolo ativo na COB — nenhum sem acompanhamento médico e nutricional';
+      pontos=[
+        {i:'🚨',t:'<strong>Sem supervisão médica</strong>, os riscos superam os benefícios.'},
+        {i:'🚨',t:'<strong>Perda de músculo silenciosa</strong> pode estar comprometendo seu metabolismo permanentemente.'},
+        {i:'💡',t:'Nossa equipe avalia o que está acontecendo e reestrutura o protocolo com segurança.'}
+      ];
+      msg='Olá! Fiz o quiz do Mounjaro e meu resultado indicou riscos sérios no protocolo atual. Preciso de ajuda urgente.';
+    }
+  } else {
+    if(pct>=0.70){
+      nv='otimo';badge='✅ Perfil favorável';ic='⭐';
+      tit='Você tem um perfil muito favorável para o tratamento';
+      desc='Com base nas suas respostas, você tem a mentalidade e a estrutura certa para fazer bom uso do Mounjaro e manter o resultado.';
+      dnum='91%';dtxt='de pacientes com perfil favorável e protocolo completo mantêm o resultado em 12 meses';
+      pontos=[
+        {i:'✅',t:'<strong>Motivação de longo prazo</strong> — você busca resultado real, não atalho.'},
+        {i:'✅',t:'<strong>Consciência sobre o protocolo</strong> — você entende que a caneta funciona dentro de um contexto de cuidado.'},
+        {i:'💡',t:'O próximo passo é uma avaliação médica completa para confirmar a indicação e montar o protocolo certo.'}
+      ];
+      msg='Olá! Fiz o quiz e meu resultado foi "Perfil favorável" para o Mounjaro. Gostaria de agendar uma avaliação na COB.';
+    } else if(pct>=0.40){
+      nv='atencao';badge='⚠️ Avaliação necessária';ic='🔍';
+      tit='Você pode se beneficiar — mas precisa de avaliação antes';
+      desc='Algumas respostas indicam fatores que precisam ser investigados antes de iniciar o Mounjaro. Começar sem essa base pode comprometer o resultado.';
+      dnum='78%';dtxt='dos pacientes têm causa hormonal ou comportamental não investigada ao chegar na COB';
+      pontos=[
+        {i:'⚠️',t:'<strong>Hormônios não investigados</strong> podem ser a causa principal da resistência ao emagrecimento.'},
+        {i:'⚠️',t:'<strong>Padrão comportamental com comida</strong> precisa de atenção antes ou junto com o tratamento.'},
+        {i:'💡',t:'A avaliação completa vai identificar o que precisa ser ajustado e se o Mounjaro é a melhor opção agora.'}
+      ];
+      msg='Olá! Fiz o quiz e meu resultado indica que preciso de avaliação antes de começar o Mounjaro. Gostaria de agendar.';
+    } else {
+      nv='risco';badge='🚨 Base necessária primeiro';ic='🩺';
+      tit='Antes do Mounjaro, você precisa de uma avaliação completa';
+      desc='Existem fatores importantes não investigados que podem estar por trás da dificuldade de emagrecer. Começar com a caneta sem essa base pode não resolver o problema.';
+      dnum='340+';dtxt='pacientes atendidos na COB — todos com avaliação completa antes de qualquer prescrição';
+      pontos=[
+        {i:'🚨',t:'<strong>Causa subjacente não investigada</strong> — hormonal, metabólica ou comportamental.'},
+        {i:'🚨',t:'<strong>Sem estrutura de suporte</strong>, o resultado da caneta tende a ser temporário.'},
+        {i:'💡',t:'Nossa equipe investiga as causas reais e monta o protocolo certo — com ou sem Mounjaro.'}
+      ];
+      msg='Olá! Fiz o quiz do Mounjaro e identificaram fatores que precisam ser investigados. Gostaria de agendar uma avaliação na COB.';
+    }
+  }
+
+  const wpp=`https://wa.me/5548999999999?text=${encodeURIComponent(msg)}`;
+  return `
+    <div class="res-card ${nv}">
+      <div class="res-ic">${ic}</div>
+      <div class="res-badge">${badge}</div>
+      <div class="res-titulo">${tit}</div>
+      <div class="res-desc">${desc}</div>
+      <div class="dado-prova"><div class="dado-num">${dnum}</div><div class="dado-txt">${dtxt}</div></div>
+      <div class="res-pontos">${pontos.map(p=>`<div class="ponto"><span class="ponto-ic">${p.i}</span><span class="ponto-txt">${p.t}</span></div>`).join('')}</div>
     </div>
-    <div class="hero__content">
-      <div class="hero__logo-wrap reveal">
-        <img src="img/logo.jpg" alt="COB Run" class="hero__logo-img" />
-      </div>
-      <p class="hero__subtitle reveal">
-        Superamos limites juntos. Treinamento de alto desempenho,<br/>
-        comunidade apaixonada e resultados reais.
-      </p>
-      <div class="hero__actions reveal">
-        <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="btn btn--primary">💬 Quero Fazer Parte</a>
-        <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="btn btn--outline">Fale com a Gente</a>
-      </div>
-      <div class="hero__stats reveal">
-        <div class="hero__stat">
-          <span class="hero__stat-num">100+</span>
-          <span class="hero__stat-label">Atletas</span>
-        </div>
-        <div class="hero__stat-divider"></div>
-        <div class="hero__stat">
-          <span class="hero__stat-num">25+</span>
-          <span class="hero__stat-label">Corridas</span>
-        </div>
-        <div class="hero__stat-divider"></div>
-        <div class="hero__stat">
-          <span class="hero__stat-num">24h</span>
-          <span class="hero__stat-label">Suporte</span>
-        </div>
-      </div>
-    </div>
-    <a href="#sobre" class="hero__scroll" aria-label="Rolar para baixo">
-      <div class="hero__scroll-icon"></div>
-    </a>
-  </section>
+    <a href="${wpp}" target="_blank" class="btn-wpp">💬 Falar com a equipe da COB</a>
+    <p class="disc">Este quiz é informativo e não substitui avaliação médica. Os resultados servem como orientação para uma consulta profissional.</p>
+    <div class="div"></div>
+    <button class="btn-rei" onclick="reiniciar()">← Refazer o quiz</button>`;
+}
 
-  <!-- SOBRE -->
-  <section class="sobre" id="sobre">
-    <div class="container">
-      <div class="sobre__grid">
-        <div class="sobre__visual reveal">
-          <div class="sobre__img-wrap" id="sobreSlideshow">
-            <img src="img/IMG_9851.JPG"                  alt="COB Run" class="sobre__slide sobre__slide--active" />
-            <img src="img/equipe no dia da maratona.jpeg" alt="COB Run" class="sobre__slide" />
-            <img src="img/equipe .jpeg"                   alt="COB Run" class="sobre__slide" />
-            <img src="img/HHA25TRE3011.jpg"               alt="COB Run" class="sobre__slide" />
-            <img src="img/PAVI12886622707430.jpg"         alt="COB Run" class="sobre__slide" />
-            <img src="img/RFAO194840225011189.jpg"        alt="COB Run" class="sobre__slide" />
-          </div>
-          <div class="sobre__badge reveal">
-            <span class="sobre__badge-icon">🏅</span>
-            <div>
-              <strong>+100</strong>
-              <span>Pódios conquistados</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="sobre__text reveal">
-          <p class="section-tag">Quem somos</p>
-          <h2 class="section-title">Uma equipe feita<br/>de <span>paixão e suor</span></h2>
-          <p class="sobre__desc">
-            A COB Run nasceu da vontade de unir pessoas que amam correr. Somos mais do que uma equipe — somos uma família que se apoia em cada quilômetro, desde a primeira passada até a linha de chegada.
-          </p>
-          <p class="sobre__desc">
-            Com treinadores especializados e um método próprio de desenvolvimento, levamos cada atleta ao seu máximo potencial, independente do nível — iniciante ou veterano.
-          </p>
-          <div class="sobre__coach">
-            <img src="img/matheus ohl coach.jpeg" alt="Coach Matheus Ohl" class="sobre__coach-photo" />
-            <div class="sobre__coach-info">
-              <strong>Coach Matheus Ohl</strong>
-              <span>Treinador responsável da COB Run</span>
-            </div>
-          </div>
-          <ul class="sobre__list">
-            <li>
-              <span class="sobre__list-icon">✓</span>
-              Treinos personalizados por nível
-            </li>
-            <li>
-              <span class="sobre__list-icon">✓</span>
-              Assessoria nutricional e de performance
-            </li>
-            <li>
-              <span class="sobre__list-icon">✓</span>
-              Comunidade ativa e acolhedora
-            </li>
-            <li>
-              <span class="sobre__list-icon">✓</span>
-              Calendário completo de competições
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SERVIÇOS -->
-  <section class="servicos" id="servicos">
-    <div class="container">
-      <div class="section-header reveal">
-        <p class="section-tag">O que oferecemos</p>
-        <h2 class="section-title">Tudo para sua <span>evolução</span></h2>
-      </div>
-      <div class="servicos__layout">
-
-        <!-- Treinos em grupo — card principal destacado -->
-        <div class="servicos__main reveal">
-          <div class="card card--main">
-            <div class="card__icon">🏃</div>
-            <h3 class="card__title">Treinos em Grupo</h3>
-            <p class="card__desc">Sessões presenciais com atletas de todos os níveis, guiadas pelo Coach Matheus Ohl. Energia coletiva que faz você ir além.</p>
-            <ul class="card__schedule">
-              <li><span class="card__day">Terça</span> Beira-Mar Norte</li>
-              <li><span class="card__day">Quinta</span> Pista de Coqueiros</li>
-              <li><span class="card__day">Sábado</span> Beira-Mar Norte</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Demais serviços — grid compacto -->
-        <div class="servicos__extras">
-          <div class="servico-item reveal">
-            <span class="servico-item__icon">📊</span>
-            <div>
-              <h4>Planilha Individual</h4>
-              <p>100% personalizada para seu objetivo e condicionamento atual</p>
-            </div>
-          </div>
-          <div class="servico-item reveal">
-            <span class="servico-item__icon">🏅</span>
-            <div>
-              <h4>Assessoria em Provas</h4>
-              <p>Estratégia, pace e suporte da equipe no dia da corrida</p>
-            </div>
-          </div>
-          <div class="servico-item reveal">
-            <span class="servico-item__icon">💪</span>
-            <div>
-              <h4>Fortalecimento</h4>
-              <p>Previna lesões e potencialize sua performance</p>
-            </div>
-          </div>
-          <div class="servico-item reveal">
-            <span class="servico-item__icon">🥗</span>
-            <div>
-              <h4>Nutrição Esportiva</h4>
-              <p>Alimente-se certo para render mais e recuperar melhor</p>
-            </div>
-          </div>
-          <div class="servico-item reveal">
-            <span class="servico-item__icon">📱</span>
-            <div>
-              <h4>Training Peaks</h4>
-              <p>Métricas, cargas e progresso em tempo real com o coach</p>
-            </div>
-          </div>
-          <div class="servico-item servico-item--highlight reveal">
-            <span class="servico-item__icon">🫁</span>
-            <div>
-              <h4>Teste de VO₂ Máximo <span class="servico-item__tag">Clínica COB</span></h4>
-              <p>Análise científica da sua capacidade aeróbica individual</p>
-              <a href="vo2.html" class="servico-item__link">Saiba mais →</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="servicos__cta reveal">
-        <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="btn btn--primary servicos__wa-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-          Falar no WhatsApp
-        </a>
-        <a href="planos.html" class="btn btn--outline servicos__wa-btn">
-          Ver Planos e Preços →
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- NÚMEROS -->
-  <section class="numeros" id="numeros">
-    <div class="numeros__bg"></div>
-    <div class="container">
-      <div class="numeros__grid">
-        <div class="numero reveal">
-          <span class="numero__val" data-target="100">0</span>
-          <span class="numero__plus">+</span>
-          <span class="numero__label">Atletas ativos</span>
-        </div>
-        <div class="numero reveal">
-          <span class="numero__val" data-target="25">0</span>
-          <span class="numero__plus">+</span>
-          <span class="numero__label">Corridas em Floripa</span>
-        </div>
-        <div class="numero reveal">
-          <span class="numero__val" data-target="100">0</span>
-          <span class="numero__plus">+</span>
-          <span class="numero__label">Pódios conquist.</span>
-        </div>
-        <div class="numero reveal">
-          <span class="numero__val" data-target="24">0</span>
-          <span class="numero__plus">h</span>
-          <span class="numero__label">Suporte diário</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- GALERIA -->
-  <section class="galeria" id="galeria">
-    <div class="container">
-      <div class="section-header reveal">
-        <p class="section-tag">Momentos</p>
-        <h2 class="section-title">Nossa <span>galeria</span></h2>
-      </div>
-      <div class="galeria__grid reveal">
-        <!-- col 1, rows 1-2 (tall) -->
-        <div class="galeria__item galeria__item--large">
-          <img src="img/equipe no dia da maratona.jpeg" alt="Equipe COB Run na maratona" class="galeria__photo" />
-          <div class="galeria__caption">Dia de prova 🏁</div>
-        </div>
-        <!-- col 2, row 1 -->
-        <div class="galeria__item">
-          <img src="img/equipe .jpeg" alt="Equipe COB Run" class="galeria__photo" />
-          <div class="galeria__caption">Nossa equipe 👥</div>
-        </div>
-        <!-- col 3, row 1 -->
-        <div class="galeria__item">
-          <img src="img/matheus ohl coach.jpeg" alt="Coach Matheus Ohl" class="galeria__photo" />
-          <div class="galeria__caption">Coach Matheus Ohl 🏃</div>
-        </div>
-        <!-- col 2, row 2 -->
-        <div class="galeria__item">
-          <img src="img/PAVI12886622707430.jpg" alt="COB Run em ação" class="galeria__photo" />
-          <div class="galeria__caption">Superando limites 💪</div>
-        </div>
-        <!-- col 3, row 2 -->
-        <div class="galeria__item">
-          <img src="img/HHA25TRE3011.jpg" alt="COB Run treino" class="galeria__photo" />
-          <div class="galeria__caption">Treino em equipe 🤝</div>
-        </div>
-        <!-- cols 1-2, row 3 (wide) -->
-        <div class="galeria__item galeria__item--wide">
-          <img src="img/RFAO194840225011189.jpg" alt="COB Run corrida" class="galeria__photo" />
-          <div class="galeria__caption">Chegando juntos 🏆</div>
-        </div>
-        <!-- col 3, row 3 -->
-        <div class="galeria__item">
-          <img src="img/IMG_9851.JPG" alt="COB Run" class="galeria__photo" />
-          <div class="galeria__caption">COB Run 🔵</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- DEPOIMENTOS -->
-  <section class="depoimentos">
-    <div class="container">
-      <div class="section-header reveal">
-        <p class="section-tag">Depoimentos</p>
-        <h2 class="section-title">O que dizem nossos <span>atletas</span></h2>
-      </div>
-      <div class="depoimentos__grid">
-        <div class="depoimento reveal">
-          <div class="depoimento__stars">★★★★★</div>
-          <p class="depoimento__text">"Entrei sem experiência e em 6 meses completei meus primeiros 10km. A COB Run mudou minha vida!"</p>
-          <div class="depoimento__autor">
-            <div class="depoimento__avatar">L</div>
-            <div>
-              <strong>Luciana R.</strong>
-              <span>Atleta há 2 anos</span>
-            </div>
-          </div>
-        </div>
-        <div class="depoimento reveal">
-          <div class="depoimento__stars">★★★★★</div>
-          <p class="depoimento__text">"Os treinadores são incríveis. A planilha personalizada me ajudou a bater meu recorde pessoal nos 10km!"</p>
-          <div class="depoimento__autor">
-            <div class="depoimento__avatar">R</div>
-            <div>
-              <strong>Rafael M.</strong>
-              <span>Atleta há 3 anos</span>
-            </div>
-          </div>
-        </div>
-        <div class="depoimento reveal">
-          <div class="depoimento__stars">★★★★★</div>
-          <p class="depoimento__text">"Mais que uma equipe, uma família. O apoio nos treinos e nas provas faz toda a diferença. Recomendo muito!"</p>
-          <div class="depoimento__autor">
-            <div class="depoimento__avatar">J</div>
-            <div>
-              <strong>Juliana C.</strong>
-              <span>Atleta há 1 ano</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTATO -->
-  <section class="contato" id="contato">
-    <div class="container">
-      <div class="contato__grid">
-        <div class="contato__info reveal">
-          <p class="section-tag">Contato</p>
-          <h2 class="section-title">Vamos correr<br/><span>juntos?</span></h2>
-          <p class="contato__desc">Entre em contato e descubra como a COB Run pode transformar a sua corrida. Respondemos em até 24h.</p>
-          <ul class="contato__list">
-            <li>
-              <span class="contato__icon">📍</span>
-              <span>Av. Madre Benvenuta, 943, Santa Mônica<br/>Florianópolis – SC</span>
-            </li>
-            <li>
-              <span class="contato__icon">📞</span>
-              <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="contato__wa-link">
-                (48) 99677-6817 · Fale pelo WhatsApp →
-              </a>
-            </li>
-            <li>
-              <span class="contato__icon">📧</span>
-              <a href="mailto:cobclinica21@gmail.com" class="contato__wa-link">cobclinica21@gmail.com</a>
-            </li>
-            <li>
-              <span class="contato__icon">📸</span>
-              <a href="https://instagram.com/cobrun.assessoria" target="_blank" class="contato__wa-link">@cobrun.assessoria</a>
-            </li>
-            <li>
-              <span class="contato__icon">🏃</span>
-              <span><strong>Coach:</strong> Matheus Ohl</span>
-            </li>
-          </ul>
-          <div class="contato__social">
-            <a href="https://instagram.com/cobrun.assessoria" target="_blank" class="social-btn" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            </a>
-            <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="social-btn" aria-label="WhatsApp">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <form class="contato__form reveal" id="contactForm"
-              action="https://formsubmit.co/cobclinica21@gmail.com"
-              method="POST">
-          <!-- FormSubmit config -->
-          <input type="hidden" name="_subject" value="Novo contato pelo site COB Run!" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_next" value="https://cobrun.com.br/obrigado.html" />
-
-          <div class="form__group">
-            <label for="nome">Nome completo</label>
-            <input type="text" id="nome" name="nome" placeholder="Seu nome" required />
-          </div>
-          <div class="form__group">
-            <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" placeholder="seu@email.com" required />
-          </div>
-          <div class="form__group">
-            <label for="telefone">WhatsApp / Telefone</label>
-            <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" />
-          </div>
-          <div class="form__group">
-            <label for="nivel">Seu nível de corrida</label>
-            <select id="nivel" name="nivel">
-              <option value="">Selecione...</option>
-              <option value="iniciante">Iniciante</option>
-              <option value="intermediario">Intermediário</option>
-              <option value="avancado">Avançado</option>
-            </select>
-          </div>
-          <div class="form__group form__group--full">
-            <label for="mensagem">Mensagem</label>
-            <textarea id="mensagem" name="mensagem" rows="4" placeholder="Me conte sobre seus objetivos..."></textarea>
-          </div>
-          <button type="submit" class="btn btn--primary btn--full">Enviar Mensagem 🚀</button>
-          <p class="form__note">Respondemos em até 24 horas!</p>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <img src="img/logo.jpg" alt="COB Run" class="footer__logo-img" />
-          <p>Correndo juntos,<br/>chegando mais longe.</p>
-          <p class="footer__address">📍 Av. Madre Benvenuta, 943<br/>Santa Mônica · Florianópolis – SC</p>
-        </div>
-        <div class="footer__links">
-          <h4>Links</h4>
-          <ul>
-            <li><a href="#sobre">Sobre</a></li>
-            <li><a href="#servicos">Serviços</a></li>
-            <li><a href="planos.html">Planos</a></li>
-            <li><a href="vo2.html">VO₂ Máximo</a></li>
-            <li><a href="#galeria">Galeria</a></li>
-            <li><a href="#contato">Contato</a></li>
-          </ul>
-        </div>
-        <div class="footer__links">
-          <h4>Serviços</h4>
-          <ul>
-            <li><a href="#servicos">Treinos em Grupo</a></li>
-            <li><a href="#servicos">Planilha Individual</a></li>
-            <li><a href="#servicos">Assessoria em Provas</a></li>
-            <li><a href="#servicos">Nutrição Esportiva</a></li>
-          </ul>
-        </div>
-        <div class="footer__social-col">
-          <h4>Redes Sociais</h4>
-          <div class="footer__social">
-            <a href="https://instagram.com/cobrun.assessoria" target="_blank" class="social-btn social-btn--sm" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            </a>
-            <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="social-btn social-btn--sm" aria-label="WhatsApp">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="footer__bottom">
-        <p>© 2024 COB Run. Todos os direitos reservados.</p>
-        <p>Feito com ❤️ para corredores</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- WHATSAPP FLUTUANTE -->
-  <a href="https://wa.me/5548996776817?text=Olá%2C%20gostaria%20de%20saber%20mais%20informações%20sobre%20a%20COB%20Run!" target="_blank" class="whatsapp-float" aria-label="Fale pelo WhatsApp">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-    <span class="whatsapp-float__label">Fale Conosco</span>
-  </a>
-
-  <script src="script.js"></script>
+function reiniciar(){
+  tipo=''; atual=0; pts=0; selIdx=null; selPts=null;
+  document.getElementById('tela-intro').style.display='block';
+  document.querySelectorAll('.quiz-section').forEach(q=>q.classList.remove('ativo'));
+  const t=document.getElementById('tela-res');
+  t.classList.remove('ativo'); t.innerHTML='';
+}
+</script>
 </body>
 </html>
